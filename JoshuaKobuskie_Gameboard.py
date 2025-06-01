@@ -33,9 +33,9 @@ class CluedoBoard:
     def print_board(self):
         for row in self.board:
             for square in row:
-                if square.split()[0] == "H":
+                if list(square)[0] == "H":
                     print("#", end="")
-                elif square.split()[0] != "X":
+                elif list(square)[0] != "X":
                     print("O", end="")
                 else:
                     print(" ", end="")
@@ -45,23 +45,45 @@ class CluedoBoard:
         moves = []
 
         if position[0]-1 >= 0:
-            if self.board[position[0]-1][position[1]] != "X":
-                moves.append("Up")
+            # Check for halls
+            if list(self.board[position[0]-1][position[1]])[0] == "H":
+                moves.append(["Up", [position[0]-1, position[1]]])
+
+            # Check for rooms
+            elif list(self.board[position[0]-1][position[1]])[0] == "U":
+                moves.append(["Up", self.rooms[list(self.board[position[0]-1][position[1]])[1]]])
+
         if position[0]+1 < len(self.board):
-            if self.board[position[0]+1][position[1]] != "X":
-                moves.append("Down")
+            # Check for halls
+            if list(self.board[position[0]+1][position[1]])[0] == "H":
+                moves.append(["Down", [position[0]+1, position[1]]])
+
+            # Check for rooms
+            elif list(self.board[position[0]+1][position[1]])[0] == "D":
+                moves.append(["Down", self.rooms[list(self.board[position[0]+1][position[1]])[1]]])
+
         if position[1]-1 >= 0:
-            # Special case with DH
-            if self.board[position[0]][position[1]-1] != "X" and self.board[position[0]][position[1]] != "DH":
-                moves.append("Left")
+            # Check for halls
+            if list(self.board[position[0]][position[1]-1])[0] == "H":
+                moves.append(["Left", [position[0], position[1]-1]])
+
+            # Check for rooms
+            if list(self.board[position[0]][position[1]-1])[0] == "L":
+                moves.append(["Left", self.rooms[list(self.board[position[0]][position[1]-1])[1]]])
+
         if position[1]+1 < len(self.board[0]):
-            # Special case with DH
-            if self.board[position[0]][position[1]+1] != "X" and self.board[position[0]][position[1]] != "DH":
-                moves.append("Right")
+            # Check for halls
+            if list(self.board[position[0]][position[1]+1])[0] == "H":
+                moves.append(["Right", [position[0], position[1]+1]])
+            
+            # Check for rooms
+            if list(self.board[position[0]][position[1]+1])[0] == "R":
+                moves.append(["Right", self.rooms[list(self.board[position[0]][position[1]+1])[1]]])
 
         return moves
 
 
 board = CluedoBoard()
 board.print_board()
-print(board.check_moves([18, 12]))
+print(board.check_moves([17, 12]))
+print(board.check_moves([18, 6]))
