@@ -51,10 +51,12 @@ class CluedoBoard:
             if self.board[position[0]+1][position[1]] != "X":
                 moves.append("Down")
         if position[1]-1 >= 0:
-            if self.board[position[0]][position[1]-1] != "X":
+            # Special case with DH
+            if self.board[position[0]][position[1]-1] != "X" and self.board[position[0]][position[1]] != "DH":
                 moves.append("Left")
         if position[1]+1 < len(self.board[0]):
-            if self.board[position[0]][position[1]+1] != "X":
+            # Special case with DH
+            if self.board[position[0]][position[1]+1] != "X" and self.board[position[0]][position[1]] != "DH":
                 moves.append("Right")
 
         return moves
@@ -62,4 +64,4 @@ class CluedoBoard:
 
 board = CluedoBoard()
 board.print_board()
-print(board.check_moves([20, 7]))
+print(board.check_moves([18, 12]))
