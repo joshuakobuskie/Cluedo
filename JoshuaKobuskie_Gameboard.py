@@ -29,6 +29,7 @@ class CluedoBoard:
         ]
         self.rooms = {"A":"Kitchen", "B":"Ballroom", "C":"Conservatory", "D":"Dining Room", "E":"Billiard Room", "F":"Library", "G":"Lounge", "H":"Hall", "I":"Study"}
         self.passages = {"Kitchen":"Study", "Conservatory":"Lounge", "Study":"Kitchen", "Lounge":"Conservatory"}
+        self.room_positions = {"Kitchen":[[6, 4]], "Ballroom":[[5, 8], [5, 15], [7, 9], [7, 14]], "Conservatory":[[4, 18]], "Dining Room":[[12, 7], [15, 6]], "Billiard Room":[[9, 18], [12, 22]], "Library":[[14, 20], [16, 18]], "Lounge":[[19, 6]], "Hall":[[18, 11], [18, 12], [20, 14]], "Study":[[21, 17]]}
 
     def print_board(self):
         for row in self.board:
@@ -47,55 +48,65 @@ class CluedoBoard:
                     print(" ", end="")
             print()
 
-    def check_moves(self, position):
+    def check_moves(self, location):
         moves = []
-        # Handles movements out of rooms
-        if list(self.board[position[0]][position[1]])[0] == "U":
-            moves.append(["Down", [position[0]+1, position[1]]])
-        elif list(self.board[position[0]][position[1]])[0] == "D":
-            moves.append(["Up", [position[0]-1, position[1]]])
-        elif list(self.board[position[0]][position[1]])[0] == "L":
-            moves.append(["Right", [position[0], position[1]+1]])
-        elif list(self.board[position[0]][position[1]])[0] == "R":
-            moves.append(["Left", [position[0], position[1]-1]])
+
+        # Convert rooms to positions
+        if type(location) == str:
+            if location in self.passages:
+                moves.append(["Secret Passage", self.passages[location]])
+            location = self.room_positions[location]
         else:
+            location = [location]
 
-            # Handles Hall movements and movements into the rooms
-            if position[0]-1 >= 0:
-                # Check for halls
-                if list(self.board[position[0]-1][position[1]])[0] == "H":
-                    moves.append(["Up", [position[0]-1, position[1]]])
+        for position in location:
+            # Handles movements out of rooms
+            if list(self.board[position[0]][position[1]])[0] == "U":
+                moves.append(["Down", [position[0]+1, position[1]]])
+            elif list(self.board[position[0]][position[1]])[0] == "D":
+                moves.append(["Up", [position[0]-1, position[1]]])
+            elif list(self.board[position[0]][position[1]])[0] == "L":
+                moves.append(["Right", [position[0], position[1]+1]])
+            elif list(self.board[position[0]][position[1]])[0] == "R":
+                moves.append(["Left", [position[0], position[1]-1]])
+            else:
 
-                # Check for rooms
-                elif list(self.board[position[0]-1][position[1]])[0] == "U":
-                    moves.append(["Up", self.rooms[list(self.board[position[0]-1][position[1]])[1]]])
+                # Handles Hall movements and movements into the rooms
+                if position[0]-1 >= 0:
+                    # Check for halls
+                    if list(self.board[position[0]-1][position[1]])[0] == "H":
+                        moves.append(["Up", [position[0]-1, position[1]]])
 
-            if position[0]+1 < len(self.board):
-                # Check for halls
-                if list(self.board[position[0]+1][position[1]])[0] == "H":
-                    moves.append(["Down", [position[0]+1, position[1]]])
+                    # Check for rooms
+                    elif list(self.board[position[0]-1][position[1]])[0] == "U":
+                        moves.append(["Up", self.rooms[list(self.board[position[0]-1][position[1]])[1]]])
 
-                # Check for rooms
-                elif list(self.board[position[0]+1][position[1]])[0] == "D":
-                    moves.append(["Down", self.rooms[list(self.board[position[0]+1][position[1]])[1]]])
+                if position[0]+1 < len(self.board):
+                    # Check for halls
+                    if list(self.board[position[0]+1][position[1]])[0] == "H":
+                        moves.append(["Down", [position[0]+1, position[1]]])
 
-            if position[1]-1 >= 0:
-                # Check for halls
-                if list(self.board[position[0]][position[1]-1])[0] == "H":
-                    moves.append(["Left", [position[0], position[1]-1]])
+                    # Check for rooms
+                    elif list(self.board[position[0]+1][position[1]])[0] == "D":
+                        moves.append(["Down", self.rooms[list(self.board[position[0]+1][position[1]])[1]]])
 
-                # Check for rooms
-                if list(self.board[position[0]][position[1]-1])[0] == "L":
-                    moves.append(["Left", self.rooms[list(self.board[position[0]][position[1]-1])[1]]])
+                if position[1]-1 >= 0:
+                    # Check for halls
+                    if list(self.board[position[0]][position[1]-1])[0] == "H":
+                        moves.append(["Left", [position[0], position[1]-1]])
 
-            if position[1]+1 < len(self.board[0]):
-                # Check for halls
-                if list(self.board[position[0]][position[1]+1])[0] == "H":
-                    moves.append(["Right", [position[0], position[1]+1]])
-                
-                # Check for rooms
-                if list(self.board[position[0]][position[1]+1])[0] == "R":
-                    moves.append(["Right", self.rooms[list(self.board[position[0]][position[1]+1])[1]]])
+                    # Check for rooms
+                    if list(self.board[position[0]][position[1]-1])[0] == "L":
+                        moves.append(["Left", self.rooms[list(self.board[position[0]][position[1]-1])[1]]])
+
+                if position[1]+1 < len(self.board[0]):
+                    # Check for halls
+                    if list(self.board[position[0]][position[1]+1])[0] == "H":
+                        moves.append(["Right", [position[0], position[1]+1]])
+                    
+                    # Check for rooms
+                    if list(self.board[position[0]][position[1]+1])[0] == "R":
+                        moves.append(["Right", self.rooms[list(self.board[position[0]][position[1]+1])[1]]])
 
         return moves
 
@@ -105,3 +116,6 @@ board.print_board()
 print(board.check_moves([17, 12]))
 print(board.check_moves([18, 6]))
 print(board.check_moves([19, 6]))
+print(board.check_moves("Hall"))
+print(board.check_moves("Ballroom"))
+print(board.check_moves("Kitchen"))
