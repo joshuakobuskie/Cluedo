@@ -35,8 +35,14 @@ class CluedoBoard:
             for square in row:
                 if list(square)[0] == "H":
                     print("#", end="")
-                elif list(square)[0] != "X":
-                    print("O", end="")
+                elif list(square)[0] == "U":
+                    print("↑", end="")
+                elif list(square)[0] == "D":
+                    print("↓", end="")
+                elif list(square)[0] == "L":
+                    print("←", end="")
+                elif list(square)[0] == "R":
+                    print("→", end="")
                 else:
                     print(" ", end="")
             print()
