@@ -1,5 +1,6 @@
 from JoshuaKobuskie_Gameboard import CluedoBoard
 from JoshuaKobuskie_Player import Player
+import os
 
 def main():
     # board = CluedoBoard()
@@ -21,3 +22,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    # Use to clear screen between turns
+    # os.system("cls" if os.name == "nt" else "clear")

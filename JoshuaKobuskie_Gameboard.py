@@ -33,13 +33,16 @@ class CluedoBoard:
 
     def print_board(self, players):
         locations = []
+        p_map = {}
         for player in players:
             location = player.getPos()
             if type(location) == str:
                 for position in self.room_positions[location]:
                     locations.append(position)
+                    p_map[tuple(position)] = player.getColor()
             else:
                 locations.append(location)
+                p_map[tuple(location)] = player.getColor()
         
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
@@ -59,7 +62,7 @@ class CluedoBoard:
                     else:
                         print(" ", end="")
                 else:
-                    print("*", end="")
+                    print(p_map[tuple([i,j])], end="")
             print()
 
     def check_moves(self, player, players):

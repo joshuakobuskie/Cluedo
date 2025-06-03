@@ -6,16 +6,22 @@ class Player:
 
         if self.character == "Miss Scarlett":
             self.position = [24, 7]
+            self.color = "R"
         elif self.character == "Colonel Mustard":
             self.position = [17, 0]
+            self.color = "Y"
         elif self.character == "Mrs. White":
             self.position = [0, 9]
+            self.color = "W"
         elif self.character == "Reverend Green":
             self.position = [0, 14]
+            self.color = "G"
         elif self.character == "Mrs. Peacock":
             self.position = [6, 23]
+            self.color = "B"
         elif self.character == "Professor Plum":
             self.position = [19, 23]
+            self.color = "P"
 
         self.cards = []
         self.accusation = False
@@ -27,6 +33,9 @@ class Player:
 
     def getPos(self):
         return self.position
+    
+    def getColor(self):
+        return self.color
 
     def move(self, board):
         while self.moves > 0:
