@@ -111,11 +111,11 @@ class CluedoBoard:
         return moves
 
 
-board = CluedoBoard()
-board.print_board()
-print(board.check_moves([17, 12]))
-print(board.check_moves([18, 6]))
-print(board.check_moves([19, 6]))
-print(board.check_moves("Hall"))
-print(board.check_moves("Ballroom"))
-print(board.check_moves("Kitchen"))
+# board = CluedoBoard()
+# board.print_board()
+# print(board.check_moves([17, 12]))
+# print(board.check_moves([18, 6]))
+# print(board.check_moves([19, 6]))
+# print(board.check_moves("Hall"))
+# print(board.check_moves("Ballroom"))
+# print(board.check_moves("Kitchen"))
