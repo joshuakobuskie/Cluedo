@@ -12,7 +12,11 @@ def main():
     # print(board.check_moves("Kitchen"))
 
     players = [Player("Miss Scarlett")]
+    player2 = Player("Mrs. White")
+    player2.position = [17, 11]
+    players.append(player2)
     board = CluedoBoard()
+    print(board.check_moves(players[1], players))
     board.print_board(players)
 
 if __name__ == "__main__":

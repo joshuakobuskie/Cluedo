@@ -62,8 +62,20 @@ class CluedoBoard:
                     print("*", end="")
             print()
 
-    def check_moves(self, location):
+    def check_moves(self, player, players):
+        # NEED TO ADD CODE TO CHECK THE LOCATION OF OTHER PLAYERS AND NOT ALLOW MOVEMENTS INTO THE SAME SPACE
+
         moves = []
+        location = player.getPos()
+
+        blocked = []
+        for p in players:
+            p_location = p.getPos()
+            if type(p_location) == str:
+                for p_position in self.room_positions[p_location]:
+                    blocked.append(p_position)
+            else:
+                blocked.append(p_location)
 
         # Convert rooms to positions
         if type(location) == str:
@@ -75,51 +87,51 @@ class CluedoBoard:
 
         for position in location:
             # Handles movements out of rooms
-            if list(self.board[position[0]][position[1]])[0] == "U":
+            if list(self.board[position[0]][position[1]])[0] == "U" and [position[0]+1, position[1]] not in blocked:
                 moves.append(["Down", [position[0]+1, position[1]]])
-            elif list(self.board[position[0]][position[1]])[0] == "D":
+            elif list(self.board[position[0]][position[1]])[0] == "D" and [position[0]-1, position[1]] not in blocked:
                 moves.append(["Up", [position[0]-1, position[1]]])
-            elif list(self.board[position[0]][position[1]])[0] == "L":
+            elif list(self.board[position[0]][position[1]])[0] == "L" and [position[0], position[1]+1] not in blocked:
                 moves.append(["Right", [position[0], position[1]+1]])
-            elif list(self.board[position[0]][position[1]])[0] == "R":
+            elif list(self.board[position[0]][position[1]])[0] == "R" and [position[0], position[1]-1] not in blocked:
                 moves.append(["Left", [position[0], position[1]-1]])
             else:
 
                 # Handles Hall movements and movements into the rooms
                 if position[0]-1 >= 0:
                     # Check for halls
-                    if list(self.board[position[0]-1][position[1]])[0] == "H":
+                    if list(self.board[position[0]-1][position[1]])[0] == "H" and [position[0]-1, position[1]] not in blocked:
                         moves.append(["Up", [position[0]-1, position[1]]])
 
                     # Check for rooms
-                    elif list(self.board[position[0]-1][position[1]])[0] == "U":
+                    elif list(self.board[position[0]-1][position[1]])[0] == "U" and [position[0]-1, position[1]] not in blocked:
                         moves.append(["Up", self.rooms[list(self.board[position[0]-1][position[1]])[1]]])
 
                 if position[0]+1 < len(self.board):
                     # Check for halls
-                    if list(self.board[position[0]+1][position[1]])[0] == "H":
+                    if list(self.board[position[0]+1][position[1]])[0] == "H" and [position[0]+1, position[1]] not in blocked:
                         moves.append(["Down", [position[0]+1, position[1]]])
 
                     # Check for rooms
-                    elif list(self.board[position[0]+1][position[1]])[0] == "D":
+                    elif list(self.board[position[0]+1][position[1]])[0] == "D" and [position[0]+1, position[1]] not in blocked:
                         moves.append(["Down", self.rooms[list(self.board[position[0]+1][position[1]])[1]]])
 
                 if position[1]-1 >= 0:
                     # Check for halls
-                    if list(self.board[position[0]][position[1]-1])[0] == "H":
+                    if list(self.board[position[0]][position[1]-1])[0] == "H" and [position[0], position[1]-1] not in blocked:
                         moves.append(["Left", [position[0], position[1]-1]])
 
                     # Check for rooms
-                    if list(self.board[position[0]][position[1]-1])[0] == "L":
+                    if list(self.board[position[0]][position[1]-1])[0] == "L" and [position[0], position[1]-1] not in blocked:
                         moves.append(["Left", self.rooms[list(self.board[position[0]][position[1]-1])[1]]])
 
                 if position[1]+1 < len(self.board[0]):
                     # Check for halls
-                    if list(self.board[position[0]][position[1]+1])[0] == "H":
+                    if list(self.board[position[0]][position[1]+1])[0] == "H" and [position[0], position[1]+1] not in blocked:
                         moves.append(["Right", [position[0], position[1]+1]])
                     
                     # Check for rooms
-                    if list(self.board[position[0]][position[1]+1])[0] == "R":
+                    if list(self.board[position[0]][position[1]+1])[0] == "R" and [position[0], position[1]+1] not in blocked:
                         moves.append(["Right", self.rooms[list(self.board[position[0]][position[1]+1])[1]]])
 
         return moves
