@@ -20,9 +20,13 @@ class Player:
         self.cards = []
         self.accusation = False
         self.moves = 3
+        self.position = "Hall"
 
         # Self.position will always either be an array as [x, y] for a hall space
         # or a string such as "Hall" if in a room
+
+    def getPos(self):
+        return self.position
 
     def move(self, board):
         while self.moves > 0:
@@ -45,20 +49,14 @@ class Player:
                     selection -= 1
                 except ValueError:
                     print("Invalid selection: Please enter a value between 1 and {}".format(len(possible_moves)))
-                
-
-            # Set moves to 0 if they enter a room and set their room state
-            if type(possible_moves[selection][1]) == str:
-                self.moves = 0
             
             # Take step and save new position
             self.position = possible_moves[selection][1]
             self.moves -= 1
 
+            # Set moves to 0 if they enter a room and set their room state
+            if type(possible_moves[selection][1]) == str:
+                self.moves = 0
 
         print("Steps remaining: {}".format(self.moves))
         print("Current position: {}".format(self.position))
-
-test = Player("Miss Scarlett")
-board = CluedoBoard()
-test.move(board)

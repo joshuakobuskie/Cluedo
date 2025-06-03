@@ -31,21 +31,35 @@ class CluedoBoard:
         self.passages = {"Kitchen":"Study", "Conservatory":"Lounge", "Study":"Kitchen", "Lounge":"Conservatory"}
         self.room_positions = {"Kitchen":[[6, 4]], "Ballroom":[[5, 8], [5, 15], [7, 9], [7, 14]], "Conservatory":[[4, 18]], "Dining Room":[[12, 7], [15, 6]], "Billiard Room":[[9, 18], [12, 22]], "Library":[[14, 20], [16, 18]], "Lounge":[[19, 6]], "Hall":[[18, 11], [18, 12], [20, 14]], "Study":[[21, 17]]}
 
-    def print_board(self):
-        for row in self.board:
-            for square in row:
-                if list(square)[0] == "H":
-                    print("#", end="")
-                elif list(square)[0] == "U":
-                    print("↑", end="")
-                elif list(square)[0] == "D":
-                    print("↓", end="")
-                elif list(square)[0] == "L":
-                    print("←", end="")
-                elif list(square)[0] == "R":
-                    print("→", end="")
+    def print_board(self, players):
+        locations = []
+        for player in players:
+            location = player.getPos()
+            if type(location) == str:
+                for position in self.room_positions[location]:
+                    locations.append(position)
+            else:
+                locations.append(location)
+        
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                if [i, j] not in locations:
+                    square = self.board[i][j]
+
+                    if list(square)[0] == "H":
+                        print("#", end="")
+                    elif list(square)[0] == "U":
+                        print("↑", end="")
+                    elif list(square)[0] == "D":
+                        print("↓", end="")
+                    elif list(square)[0] == "L":
+                        print("←", end="")
+                    elif list(square)[0] == "R":
+                        print("→", end="")
+                    else:
+                        print(" ", end="")
                 else:
-                    print(" ", end="")
+                    print("*", end="")
             print()
 
     def check_moves(self, location):
@@ -109,13 +123,3 @@ class CluedoBoard:
                         moves.append(["Right", self.rooms[list(self.board[position[0]][position[1]+1])[1]]])
 
         return moves
-
-
-# board = CluedoBoard()
-# board.print_board()
-# print(board.check_moves([17, 12]))
-# print(board.check_moves([18, 6]))
-# print(board.check_moves([19, 6]))
-# print(board.check_moves("Hall"))
-# print(board.check_moves("Ballroom"))
-# print(board.check_moves("Kitchen"))
