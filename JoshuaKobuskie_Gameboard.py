@@ -1,3 +1,5 @@
+import random
+
 class CluedoBoard:
     def __init__(self):
         self.board = [
@@ -30,6 +32,7 @@ class CluedoBoard:
         self.rooms = {"A":"Kitchen", "B":"Ballroom", "C":"Conservatory", "D":"Dining Room", "E":"Billiard Room", "F":"Library", "G":"Lounge", "H":"Hall", "I":"Study"}
         self.passages = {"Kitchen":"Study", "Conservatory":"Lounge", "Study":"Kitchen", "Lounge":"Conservatory"}
         self.room_positions = {"Kitchen":[[6, 4]], "Ballroom":[[5, 8], [5, 15], [7, 9], [7, 14]], "Conservatory":[[4, 18]], "Dining Room":[[12, 7], [15, 6]], "Billiard Room":[[9, 18], [12, 22]], "Library":[[14, 20], [16, 18]], "Lounge":[[19, 6]], "Hall":[[18, 11], [18, 12], [20, 14]], "Study":[[21, 17]]}
+        self.characters = ["Miss Scarlett", "Colonel Mustard", "Mrs. White", "Reverend Green", "Mrs. Peacock", "Professor Plum"]
 
     def print_board(self, players):
         locations = []
@@ -138,3 +141,6 @@ class CluedoBoard:
                         moves.append(["Right", self.rooms[list(self.board[position[0]][position[1]+1])[1]]])
 
         return moves
+    
+    def assign_character(self):
+        return self.characters.pop(random.randint(0, len(self.characters)-1))

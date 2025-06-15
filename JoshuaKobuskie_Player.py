@@ -54,7 +54,8 @@ class Player:
                     if selection < 1 or selection > len(possible_moves):
                         print("Invalid selection: Please enter a value between 1 and {}".format(len(possible_moves)))
                         selection = ""
-                    selection -= 1
+                    else:
+                        selection -= 1
                 except ValueError:
                     print("Invalid selection: Please enter a value between 1 and {}".format(len(possible_moves)))
             
@@ -68,3 +69,10 @@ class Player:
 
         print("Steps remaining: {}".format(self.moves))
         print("Current position: {}".format(self.position))
+
+    def get_info(self, player_number):
+        print("Hello Player {}!".format(player_number))
+        print("Character: {}".format(self.character))
+        print("Color/Symbol: {}".format(self.color))
+        print("Position: {}".format(self.position))
+        print("Cards: {}".format(self.cards))
