@@ -16,8 +16,9 @@ def main():
     # print(board.check_moves("Kitchen"))
 
     # players = [Player("Miss Scarlett", [])]
+    # players[0].position = [17,11]
     # player2 = Player("Mrs. White", [])
-    # player2.position = [17, 11]
+    # player2.position = "Hall"
     # players.append(player2)
     # board = CluedoBoard()
     # print(board.check_moves(players[1], players))

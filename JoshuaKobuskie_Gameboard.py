@@ -69,8 +69,6 @@ class CluedoBoard:
             print()
 
     def check_moves(self, player, players):
-        # NEED TO ADD CODE TO CHECK THE LOCATION OF OTHER PLAYERS AND NOT ALLOW MOVEMENTS INTO THE SAME SPACE
-
         moves = []
         location = player.getPos()
 
