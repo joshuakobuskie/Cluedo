@@ -1,4 +1,5 @@
 import random
+from JoshuaKobuskie_Player import Player
 
 class CluedoBoard:
     def __init__(self):
@@ -33,11 +34,16 @@ class CluedoBoard:
         self.passages = {"Kitchen":"Study", "Conservatory":"Lounge", "Study":"Kitchen", "Lounge":"Conservatory"}
         self.room_positions = {"Kitchen":[[6, 4]], "Ballroom":[[5, 8], [5, 15], [7, 9], [7, 14]], "Conservatory":[[4, 18]], "Dining Room":[[12, 7], [15, 6]], "Billiard Room":[[9, 18], [12, 22]], "Library":[[14, 20], [16, 18]], "Lounge":[[19, 6]], "Hall":[[18, 11], [18, 12], [20, 14]], "Study":[[21, 17]]}
         self.characters = ["Miss Scarlett", "Colonel Mustard", "Mrs. White", "Reverend Green", "Mrs. Peacock", "Professor Plum"]
+        self.weapons = ["Candlestick holder", "Knife", "Lead pipe", "Revolver", "Rope", "Wrench"]
+        self.destinations = ["Kitchen", "Ballroom", "Conservatory", "Dining Room", "Billiard Room", "Library", "Lounge", "Hall", "Study"]
+        self.players = []
+        self.solution = []
 
-    def print_board(self, players):
+
+    def print_board(self):
         locations = []
         p_map = {}
-        for player in players:
+        for player in self.players:
             location = player.getPos()
             if type(location) == str:
                 for position in self.room_positions[location]:
@@ -68,12 +74,12 @@ class CluedoBoard:
                     print(p_map[tuple([i,j])], end="")
             print()
 
-    def check_moves(self, player, players):
+    def check_moves(self, player):
         moves = []
         location = player.getPos()
 
         blocked = []
-        for p in players:
+        for p in self.players:
             p_location = p.getPos()
             if type(p_location) == str:
                 for p_position in self.room_positions[p_location]:
@@ -140,5 +146,25 @@ class CluedoBoard:
 
         return moves
     
-    def assign_character(self):
-        return self.characters.pop(random.randint(0, len(self.characters)-1))
+    def setup(self, player_count):
+        # Selects characters for players
+        characters = random.sample(self.characters, player_count)
+        random.shuffle(characters)
+        
+        # Selects solution cards and removes from the deck to be dealt
+        self.solution.append(self.characters.pop(random.randint(0, len(self.characters)-1)))
+        self.solution.append(self.weapons.pop(random.randint(0, len(self.weapons)-1)))
+        self.solution.append(self.destinations.pop(random.randint(0, len(self.destinations)-1)))
+
+        # STILL NEEDS TO BE DONE
+        # Handle uneven division of cards to player
+        # Put cards in player hands and then reduce the number of cards to give to the next person
+
+        # Mixes cards to deal to players
+        cards = self.characters + self.weapons + self.destinations
+        random.shuffle(cards)
+        num_cards_per_player = len(cards) / player_count
+
+        # Assigns players and deals
+        for _ in range(player_count):
+            self.players.append(Player(characters.pop(), []))

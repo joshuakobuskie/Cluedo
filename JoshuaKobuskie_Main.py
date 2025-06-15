@@ -39,9 +39,7 @@ def main():
         except ValueError:
             print("Invalid selection: Please enter a value between 1 and 6")
     
-    players = []
-    for _ in range(player_count):
-        players.append(Player(board.assign_character(), []))
+    players = board.setup(player_count)
 
     print("The game is about to begin! Please pass the device to the first player!")
     time.sleep(5)
