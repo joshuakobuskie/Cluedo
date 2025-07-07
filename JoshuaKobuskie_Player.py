@@ -37,6 +37,11 @@ class Player:
         return self.color
 
     def move(self, board):
+        # Only move if you have not made an accusation
+        if self.accusation:
+            print("You have already made an incorrect accusation!")
+            self.moves = 0
+
         while self.moves > 0:
             print("Steps remaining: {}".format(self.moves))
 
@@ -76,3 +81,14 @@ class Player:
         print("Color/Symbol: {}".format(self.color))
         print("Position: {}".format(self.position))
         print("Cards: {}".format(self.cards))
+
+    # STILL NEEDED
+    # Guess a character, weapon, and the room you have just moved into
+    # It is important to note that the room is fixed as the room you just entered
+    # The player you guess must also move into the room with you - display this based on the active player
+
+    # Need player movement, roll dice each turn, make movements
+
+    # Create a message that says which player to pass the computer to and let them pick which card they are going to show you after a suggestion?
+
+    # Add an entranceway and new room for the accusation station
