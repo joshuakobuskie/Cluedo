@@ -44,8 +44,8 @@ def main():
     print("The game is about to begin! Please pass the device to the first player!")
     time.sleep(5)
     os.system("cls" if os.name == "nt" else "clear")
-    board.print_board(players)
-    players[0].get_info(1)
+    board.print_board()
+    board.get_player_info()
 
 if __name__ == "__main__":
     main()

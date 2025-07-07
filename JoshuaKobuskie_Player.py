@@ -1,11 +1,11 @@
-from JoshuaKobuskie_Gameboard import CluedoBoard
-
 class Player:
-    def __init__(self, character, cards):
+    def __init__(self, player_number, character, cards):
         self.character = character
 
         # Self.position will always either be an array as [x, y] for a hall space
         # or a string such as "Hall" if in a room
+
+        self.player_number = player_number
 
         if self.character == "Miss Scarlett":
             self.position = [24, 7]
@@ -70,8 +70,8 @@ class Player:
         print("Steps remaining: {}".format(self.moves))
         print("Current position: {}".format(self.position))
 
-    def get_info(self, player_number):
-        print("Hello Player {}!".format(player_number))
+    def get_info(self):
+        print("Hello Player {}!".format(self.player_number))
         print("Character: {}".format(self.character))
         print("Color/Symbol: {}".format(self.color))
         print("Position: {}".format(self.position))

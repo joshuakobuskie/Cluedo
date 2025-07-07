@@ -1,4 +1,5 @@
 import random
+import numpy as np
 from JoshuaKobuskie_Player import Player
 
 class CluedoBoard:
@@ -38,6 +39,7 @@ class CluedoBoard:
         self.destinations = ["Kitchen", "Ballroom", "Conservatory", "Dining Room", "Billiard Room", "Library", "Lounge", "Hall", "Study"]
         self.players = []
         self.solution = []
+        self.current_player = 0
 
 
     def print_board(self):
@@ -156,15 +158,22 @@ class CluedoBoard:
         self.solution.append(self.weapons.pop(random.randint(0, len(self.weapons)-1)))
         self.solution.append(self.destinations.pop(random.randint(0, len(self.destinations)-1)))
 
-        # STILL NEEDS TO BE DONE
-        # Handle uneven division of cards to player
-        # Put cards in player hands and then reduce the number of cards to give to the next person
-
         # Mixes cards to deal to players
         cards = self.characters + self.weapons + self.destinations
         random.shuffle(cards)
-        num_cards_per_player = len(cards) / player_count
 
+        # Splits cards for player hands
+        cards = np.array_split(cards, player_count)
+        cards = [card_set.tolist() for card_set in cards]
+        
         # Assigns players and deals
-        for _ in range(player_count):
-            self.players.append(Player(characters.pop(), []))
+        for i in range(player_count):
+            self.players.append(Player(i+1, characters.pop(), cards[i]))
+
+    def next_player(self):
+        self.current_player = self.current_player + 1
+        if self.current_player >= len(self.players):
+            self.current_player = 0
+
+    def get_player_info(self):
+        return self.players[self.current_player].get_info()
