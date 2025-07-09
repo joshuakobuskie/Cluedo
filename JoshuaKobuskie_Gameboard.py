@@ -152,7 +152,12 @@ class CluedoBoard:
         # Selects characters for players
         characters = random.sample(self.characters, player_count)
         random.shuffle(characters)
-        
+
+        # Storing the card order to use in other functions
+        temp_characters = self.characters.copy()
+        temp_weapons = self.weapons.copy()
+        temp_destinations = self.destinations.copy()
+
         # Selects solution cards and removes from the deck to be dealt
         self.solution.append(self.characters.pop(random.randint(0, len(self.characters)-1)))
         self.solution.append(self.weapons.pop(random.randint(0, len(self.weapons)-1)))
@@ -170,6 +175,11 @@ class CluedoBoard:
         for i in range(player_count):
             self.players.append(Player(i+1, characters.pop(), cards[i]))
 
+        # Add the solution cards back into the reference deck
+        self.characters = temp_characters
+        self.weapons = temp_weapons
+        self.destinations = temp_destinations
+
     def next_player(self):
         self.current_player = self.current_player + 1
         if self.current_player >= len(self.players):
@@ -177,3 +187,9 @@ class CluedoBoard:
 
     def get_player_info(self):
         return self.players[self.current_player].get_info()
+    
+    def get_characters(self):
+        return self.characters
+    
+    def get_weapons(self):
+        return self.weapons

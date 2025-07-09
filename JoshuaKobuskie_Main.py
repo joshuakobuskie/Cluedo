@@ -46,6 +46,7 @@ def main():
     os.system("cls" if os.name == "nt" else "clear")
     board.print_board()
     board.get_player_info()
+    board.players[0].move(board)
 
 if __name__ == "__main__":
     main()
