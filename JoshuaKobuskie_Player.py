@@ -32,11 +32,17 @@ class Player:
         self.accusation = False
         self.moves = 0
 
-    def getPos(self):
+    def get_position(self):
         return self.position
     
-    def getColor(self):
+    def get_color(self):
         return self.color
+    
+    def get_character(self):
+        return self.character
+    
+    def set_position(self, position):
+        self.position = position
 
     def move(self, board):
         # Roll for number of moves
@@ -134,6 +140,99 @@ class Player:
 
             print("You suggest that it was {} in the {} with the {}!".format(character_selection, destination_selection, weapon_selection))
 
+            # Move suggested player into the room
+            for p in board.get_players():
+                if p.get_character() == character_selection:
+                    p.set_position(destination_selection)
+
+            # Disprove guess
+
+        # Offer accusation
+        print("Would you like to make your final accusation?")
+        print("Option 1: Yes")
+        print("Option 2: No")
+        accusation_selection = ""
+        while type(accusation_selection) != int:
+            try:
+                accusation_selection = input("Please enter an option number to select if you will make your final accusation: ")
+                accusation_selection = int(accusation_selection)
+                if accusation_selection < 1 or accusation_selection > 2:
+                    print("Invalid selection: Please enter a value between 1 and 2")
+                    accusation_selection = ""
+                else:
+                    accusation_selection -= 1
+            except ValueError:
+                print("Invalid selection: Please enter a value between 1 and 2")
+
+        if accusation_selection == 0:
+            character_selection = ""
+            weapon_selection = ""
+            destination_selection = ""
+
+            # Character Accusation
+            print("Accuse one of the following characters:")
+            characters = board.get_characters()
+            for i in range(len(characters)):
+                print("Option {}: {}".format(i+1, characters[i]))
+            while type(character_selection) != int:
+                try:
+                    character_selection = input("Please enter an option number to accuse a character: ")
+                    character_selection = int(character_selection)
+                    if character_selection < 1 or character_selection > len(characters):
+                        print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
+                        character_selection = ""
+                    else:
+                        character_selection -= 1
+                except ValueError:
+                    print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
+            character_selection = characters[character_selection]
+            
+            # Weapon Accusation
+            print("Accuse one of the following weapons:")
+            weapons = board.get_weapons()
+            for i in range(len(weapons)):
+                print("Option {}: {}".format(i+1, weapons[i]))
+            while type(weapon_selection) != int:
+                try:
+                    weapon_selection = input("Please enter an option number to accuse a weapon: ")
+                    weapon_selection = int(weapon_selection)
+                    if weapon_selection < 1 or weapon_selection > len(weapons):
+                        print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
+                        weapon_selection = ""
+                    else:
+                        weapon_selection -= 1
+                except ValueError:
+                    print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
+            weapon_selection = weapons[weapon_selection]
+
+            # Destination Accusation
+            print("Accuse one of the following rooms:")
+            destinations = board.get_destinations()
+            for i in range(len(destinations)):
+                print("Option {}: {}".format(i+1, destinations[i]))
+            while type(destination_selection) != int:
+                try:
+                    destination_selection = input("Please enter an option number to accuse a room: ")
+                    destination_selection = int(destination_selection)
+                    if destination_selection < 1 or destination_selection > len(destinations):
+                        print("Invalid selection: Please enter a value between 1 and {}".format(len(destinations)))
+                        destination_selection = ""
+                    else:
+                        destination_selection -= 1
+                except ValueError:
+                    print("Invalid selection: Please enter a value between 1 and {}".format(len(destinations)))
+            destination_selection = destinations[destination_selection]
+
+            print("You accuse {} in the {} with the {}!".format(character_selection, destination_selection, weapon_selection))
+
+            self.accusation = True
+
+            # Check Accusation
+            if board.accuse(character_selection, weapon_selection, destination_selection):
+                print("You have used your clues and solved the mystery! Congratulations! You win!")
+            else:
+                print("You have missed a critical piece of evidence and made an incorrect accusation! You lose!")
+
     def get_info(self):
         print("Hello Player {}!".format(self.player_number))
         print("Character: {}".format(self.character))
@@ -142,11 +241,5 @@ class Player:
         print("Cards: {}".format(self.cards))
 
     # STILL NEEDED
-    # Guess a character, weapon, and the room you have just moved into
-    # It is important to note that the room is fixed as the room you just entered
-    # The player you guess must also move into the room with you - display this based on the active player
-
-    # Need player movement, roll dice each turn, make movements
-
     # Create a message that says which player to pass the computer to and let them pick which card they are going to show you after a suggestion?
     # Or just show the same first card every time. This is how most people play anyway and simplifies the game

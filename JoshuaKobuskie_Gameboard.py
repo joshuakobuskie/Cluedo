@@ -46,14 +46,14 @@ class CluedoBoard:
         locations = []
         p_map = {}
         for player in self.players:
-            location = player.getPos()
+            location = player.get_position()
             if type(location) == str:
                 for position in self.room_positions[location]:
                     locations.append(position)
-                    p_map[tuple(position)] = player.getColor()
+                    p_map[tuple(position)] = player.get_color()
             else:
                 locations.append(location)
-                p_map[tuple(location)] = player.getColor()
+                p_map[tuple(location)] = player.get_color()
         
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
@@ -78,11 +78,11 @@ class CluedoBoard:
 
     def check_moves(self, player):
         moves = []
-        location = player.getPos()
+        location = player.get_position()
 
         blocked = []
         for p in self.players:
-            p_location = p.getPos()
+            p_location = p.get_position()
             if type(p_location) == str:
                 for p_position in self.room_positions[p_location]:
                     blocked.append(p_position)
@@ -193,3 +193,15 @@ class CluedoBoard:
     
     def get_weapons(self):
         return self.weapons
+    
+    def get_destinations(self):
+        return self.destinations
+    
+    def get_players(self):
+        return self.players
+    
+    def accuse(self, character, weapon, destination):
+        if character in self.solution and weapon in self.solution and destination in self.solution:
+            return True
+        else:
+            return False
