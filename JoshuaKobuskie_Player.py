@@ -1,4 +1,5 @@
 import random
+import os
 
 class Player:
     def __init__(self, player_number, character, cards):
@@ -97,6 +98,7 @@ class Player:
             if type(possible_moves[selection][1]) == str:
                 self.moves = 0
                 
+            os.system("cls" if os.name == "nt" else "clear")
             board.print_board()
             print("Steps remaining: {}".format(self.moves))
             print("Current position: {}".format(self.position))

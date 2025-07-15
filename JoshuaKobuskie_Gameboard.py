@@ -37,7 +37,7 @@ class CluedoBoard:
         self.passages = {"Kitchen":"Study", "Conservatory":"Lounge", "Study":"Kitchen", "Lounge":"Conservatory"}
         self.room_positions = {"Kitchen":[[6, 4]], "Ballroom":[[5, 8], [5, 15], [7, 9], [7, 14]], "Conservatory":[[4, 18]], "Dining Room":[[12, 7], [15, 6]], "Billiard Room":[[9, 18], [12, 22]], "Library":[[14, 20], [16, 18]], "Lounge":[[19, 6]], "Hall":[[18, 11], [18, 12], [20, 14]], "Study":[[21, 17]]}
         self.characters = ["Miss Scarlett", "Colonel Mustard", "Mrs. White", "Reverend Green", "Mrs. Peacock", "Professor Plum"]
-        self.weapons = ["Candlestick holder", "Knife", "Lead pipe", "Revolver", "Rope", "Wrench"]
+        self.weapons = ["Candlestick Holder", "Knife", "Lead Pipe", "Revolver", "Rope", "Wrench"]
         self.destinations = ["Kitchen", "Ballroom", "Conservatory", "Dining Room", "Billiard Room", "Library", "Lounge", "Hall", "Study"]
         self.players = []
         self.solution = []
@@ -220,11 +220,11 @@ class CluedoBoard:
             hand = self.players[cur].get_cards()
             if character_selection in hand or destination_selection in hand or weapon_selection in hand:
                 player_number = self.players[cur].get_player_number()
-                print("Player {} has a card that could disprove your suggestion! Please pass the device to player {}!".format(player_number, player_number))
+                print("Player {} has a card that could disprove your suggestion! Please pass the device to Player {}!".format(player_number, player_number))
                 time.sleep(5)
                 os.system("cls" if os.name == "nt" else "clear")
                 print("Player {} has suggested that it was {} in the {} with the {}.".format(suggestor_number, character_selection, destination_selection, weapon_selection))
-                print("Please select a card to show to player {} to disprove this suggestion:")
+                print("Please select a card to show to Player {} to disprove this suggestion:".format(suggestor_number))
                 
                 options = []
                 for card in hand:
@@ -246,9 +246,8 @@ class CluedoBoard:
                             card_selection -= 1
                     except ValueError:
                         print("Invalid selection: Please enter a value between 1 and {}".format(len(options)))
-
             
-                print("You will show the {} to disprove player {}'s suggestion. Please pass the device to player {}.".format(options[card_selection], suggestor_number))
+                print("You will show the {} to disprove Player {}'s suggestion. Please pass the device to Player {}.".format(options[card_selection], suggestor_number, suggestor_number))
                 time.sleep(5)
                 os.system("cls" if os.name == "nt" else "clear")
                 return [True, self.players[cur].get_player_number(), options[card_selection]]

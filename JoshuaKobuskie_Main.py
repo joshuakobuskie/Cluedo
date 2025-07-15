@@ -41,7 +41,7 @@ def main():
     
     players = board.setup(player_count)
 
-    print("The game is about to begin! Please pass the device to the first player!")
+    print("The game is about to begin! Please pass the device to Player 1!")
     time.sleep(5)
     os.system("cls" if os.name == "nt" else "clear")
     board.print_board()
