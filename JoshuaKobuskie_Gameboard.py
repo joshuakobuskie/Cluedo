@@ -5,7 +5,7 @@ from JoshuaKobuskie_Player import Player
 class CluedoBoard:
     def __init__(self):
         self.board = [
-            ["X","X","X","X","X","X","X","X","X","H","X","X","X","X","H","X","X","X","X","X","X","X","X","X"],
+            ["ZX","X","X","X","X","X","X","X","X","H","X","X","X","X","H","X","X","X","X","X","X","X","X","ZO"],
             ["X","X","X","X","X","X","X","H","H","H","X","X","X","X","H","H","H","X","X","X","X","X","X","X"],
             ["X","X","X","X","X","X","H","H","X","X","X","X","X","X","X","X","H","H","X","X","X","X","X","X"],
             ["ZK","ZT","ZC","ZH","ZN","X","H","H","X","ZB","ZA","ZL","ZL","ZR","ZM","X","H","H","X","ZC","ZO","ZN","ZS","X"],
@@ -29,7 +29,7 @@ class CluedoBoard:
             ["X","X","X","X","X","X","X","H","H","X","X","X","X","X","X","H","H","DI","X","X","X","X","X","X"],
             ["X","ZL","ZO","ZN","ZG","ZE","X","H","H","X","ZH","ZA","ZL","ZL","X","H","H","X","ZS","ZT","ZU","ZD","ZY","X"],
             ["X","X","X","X","X","X","X","H","H","X","X","X","X","X","X","H","H","X","X","X","X","X","X","X"],
-            ["X","X","X","X","X","X","X","H","X","X","X","X","X","X","X","X","H","X","X","X","X","X","X","X"]
+            ["ZO","X","X","X","X","X","X","H","X","X","X","X","X","X","X","X","H","X","X","X","X","X","X","ZX"]
         ]
         self.rooms = {"A":"Kitchen", "B":"Ballroom", "C":"Conservatory", "D":"Dining Room", "E":"Billiard Room", "F":"Library", "G":"Lounge", "H":"Hall", "I":"Study"}
         self.passages = {"Kitchen":"Study", "Conservatory":"Lounge", "Study":"Kitchen", "Lounge":"Conservatory"}
