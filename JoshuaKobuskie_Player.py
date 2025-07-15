@@ -44,6 +44,12 @@ class Player:
     def set_position(self, position):
         self.position = position
 
+    def get_cards(self):
+        return self.cards
+    
+    def get_player_number(self):
+        return self.player_number
+
     def move(self, board):
         # Roll for number of moves
 
@@ -146,6 +152,14 @@ class Player:
                     p.set_position(destination_selection)
 
             # Disprove guess
+            disprove = board.disprove(self.player_number, character_selection, destination_selection, weapon_selection)
+
+            if disprove[0]:
+                print("Your suggestion was incorrect!")
+                print("Player {} revealed the card: {}".format(disprove[1], disprove[2]))
+            else:
+                print("No one was able to disprove your suggestion!")
+
 
         # Offer accusation
         print("Would you like to make your final accusation?")

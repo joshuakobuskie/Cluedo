@@ -1,6 +1,8 @@
 import random
 import numpy as np
 from JoshuaKobuskie_Player import Player
+import time
+import os
 
 class CluedoBoard:
     def __init__(self):
@@ -207,3 +209,44 @@ class CluedoBoard:
             return True
         else:
             return False
+        
+    def disprove(self, suggestor_number, character_selection, destination_selection, weapon_selection):
+        cur = self.current_player
+
+        for i in range(len(self.players) - 1):
+            cur += 1
+            cur = cur % len(self.players)
+
+            hand = self.players[cur].get_cards()
+            if character_selection in hand or destination_selection in hand or weapon_selection in hand:
+                player_number = self.players[cur].get_player_number()
+                print("Player {} has a card that could disprove your suggestion! Please pass the device to the player {}!".format(player_number, player_number))
+                time.sleep(5)
+                os.system("cls" if os.name == "nt" else "clear")
+                print("Player {} has suggested that it was {} in the {} with the {}.".format(character_selection, destination_selection, weapon_selection))
+                print("Please select a card to show to player {} to disprove this suggestion:")
+                
+                options = []
+                for card in hand:
+                    if card == character_selection or card == destination_selection or card == weapon_selection:
+                        options.append(card)
+
+                for i in range(len(options)):
+                    print("Option {}: {}".format(i+1, options[i]))
+
+                card_selection = ""
+                while type(card_selection) != int:
+                    try:
+                        card_selection = input("Please enter an option number to reveal a card: ")
+                        card_selection = int(card_selection)
+                        if card_selection < 1 or card_selection > len(options):
+                            print("Invalid selection: Please enter a value between 1 and {}".format(len(options)))
+                            card_selection = ""
+                        else:
+                            card_selection -= 1
+                    except ValueError:
+                        print("Invalid selection: Please enter a value between 1 and {}".format(len(options)))
+
+                return [True, self.players[cur].get_player_number(), options[card_selection]]
+        
+        return [False]
