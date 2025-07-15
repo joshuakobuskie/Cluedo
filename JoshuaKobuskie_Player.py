@@ -59,6 +59,8 @@ class Player:
         # self.moves = random.randint(1, 6)
         self.moves = 100
 
+        self.get_info()
+
         # Only move if you have not made an accusation
         if self.accusation:
             print("You have already made an incorrect accusation!")
@@ -100,6 +102,7 @@ class Player:
                 
             os.system("cls" if os.name == "nt" else "clear")
             board.print_board()
+            self.get_info()
             print("Steps remaining: {}".format(self.moves))
             print("Current position: {}".format(self.position))
         

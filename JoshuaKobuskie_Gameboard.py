@@ -188,9 +188,6 @@ class CluedoBoard:
         self.current_player = self.current_player + 1
         if self.current_player >= len(self.players):
             self.current_player = 0
-
-    def get_player_info(self):
-        return self.players[self.current_player].get_info()
     
     def get_characters(self):
         return self.characters
@@ -221,7 +218,7 @@ class CluedoBoard:
             if character_selection in hand or destination_selection in hand or weapon_selection in hand:
                 player_number = self.players[cur].get_player_number()
                 print("Player {} has a card that could disprove your suggestion! Please pass the device to Player {}!".format(player_number, player_number))
-                time.sleep(5)
+                time.sleep(10)
                 os.system("cls" if os.name == "nt" else "clear")
                 print("Player {} has suggested that it was {} in the {} with the {}.".format(suggestor_number, character_selection, destination_selection, weapon_selection))
                 print("Please select a card to show to Player {} to disprove this suggestion:".format(suggestor_number))
@@ -248,7 +245,7 @@ class CluedoBoard:
                         print("Invalid selection: Please enter a value between 1 and {}".format(len(options)))
             
                 print("You will show the {} to disprove Player {}'s suggestion. Please pass the device to Player {}.".format(options[card_selection], suggestor_number, suggestor_number))
-                time.sleep(5)
+                time.sleep(10)
                 os.system("cls" if os.name == "nt" else "clear")
                 return [True, self.players[cur].get_player_number(), options[card_selection]]
         
