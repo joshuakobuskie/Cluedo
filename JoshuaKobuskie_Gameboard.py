@@ -220,10 +220,10 @@ class CluedoBoard:
             hand = self.players[cur].get_cards()
             if character_selection in hand or destination_selection in hand or weapon_selection in hand:
                 player_number = self.players[cur].get_player_number()
-                print("Player {} has a card that could disprove your suggestion! Please pass the device to the player {}!".format(player_number, player_number))
+                print("Player {} has a card that could disprove your suggestion! Please pass the device to player {}!".format(player_number, player_number))
                 time.sleep(5)
                 os.system("cls" if os.name == "nt" else "clear")
-                print("Player {} has suggested that it was {} in the {} with the {}.".format(character_selection, destination_selection, weapon_selection))
+                print("Player {} has suggested that it was {} in the {} with the {}.".format(suggestor_number, character_selection, destination_selection, weapon_selection))
                 print("Please select a card to show to player {} to disprove this suggestion:")
                 
                 options = []
@@ -247,6 +247,10 @@ class CluedoBoard:
                     except ValueError:
                         print("Invalid selection: Please enter a value between 1 and {}".format(len(options)))
 
+            
+                print("You will show the {} to disprove player {}'s suggestion. Please pass the device to player {}.".format(options[card_selection], suggestor_number))
+                time.sleep(5)
+                os.system("cls" if os.name == "nt" else "clear")
                 return [True, self.players[cur].get_player_number(), options[card_selection]]
         
         return [False]
