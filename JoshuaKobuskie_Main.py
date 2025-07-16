@@ -39,13 +39,15 @@ def main():
         except ValueError:
             print("Invalid selection: Please enter a value between 1 and 6")
     
-    players = board.setup(player_count)
+    board.setup(player_count)
 
     print("The game is about to begin! Please pass the device to Player 1!")
     time.sleep(5)
-    os.system("cls" if os.name == "nt" else "clear")
-    board.print_board()
-    board.players[0].move(board)
+
+    while board.get_play():
+        current_player = board.get_current_player()
+        current_player.move(board)
+        board.next_player()
 
 if __name__ == "__main__":
     main()

@@ -42,7 +42,7 @@ class CluedoBoard:
         self.players = []
         self.solution = []
         self.current_player = 0
-
+        self.play = True
 
     def print_board(self):
         locations = []
@@ -183,11 +183,6 @@ class CluedoBoard:
         self.characters = temp_characters
         self.weapons = temp_weapons
         self.destinations = temp_destinations
-
-    def next_player(self):
-        self.current_player = self.current_player + 1
-        if self.current_player >= len(self.players):
-            self.current_player = 0
     
     def get_characters(self):
         return self.characters
@@ -201,7 +196,24 @@ class CluedoBoard:
     def get_players(self):
         return self.players
     
+    def get_play(self):
+        return self.play
+    
+    def next_player(self):
+        self.current_player = self.current_player + 1
+        self.current_player = self.current_player % len(self.players)
+
+    def get_current_player(self):
+        return self.players[self.current_player]
+    
     def accuse(self, character, weapon, destination):
+
+        # Check to see if all players have made an accusation and the game is over
+        game_status = [p.get_accusation() for p in self.players]
+        if not True in game_status:
+            self.play = False
+        
+        # Check accusation validity
         if character in self.solution and weapon in self.solution and destination in self.solution:
             return True
         else:
@@ -249,4 +261,4 @@ class CluedoBoard:
                 os.system("cls" if os.name == "nt" else "clear")
                 return [True, self.players[cur].get_player_number(), options[card_selection]]
         
-        return [False]
+        return [False]        

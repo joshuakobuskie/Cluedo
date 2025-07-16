@@ -50,6 +50,9 @@ class Player:
     
     def get_player_number(self):
         return self.player_number
+    
+    def get_accusation(self):
+        return self.accusation
 
     def move(self, board):
         # Roll for number of moves
@@ -59,6 +62,8 @@ class Player:
         # self.moves = random.randint(1, 6)
         self.moves = 100
 
+        os.system("cls" if os.name == "nt" else "clear")
+        board.print_board()
         self.get_info()
 
         # Only move if you have not made an accusation
@@ -103,6 +108,7 @@ class Player:
             os.system("cls" if os.name == "nt" else "clear")
             board.print_board()
             self.get_info()
+
             print("Steps remaining: {}".format(self.moves))
             print("Current position: {}".format(self.position))
         
@@ -260,9 +266,4 @@ class Player:
         print("Cards: {}".format(self.cards))
 
     # STILL NEEDED
-    # Create a message that says which player to pass the computer to and let them pick which card they are going to show you after a suggestion?
-    # Or just show the same first card every time. This is how most people play anyway and simplifies the game
-
-    # Handle ending the game
-
-    # Determine how to show cards to disprove a suggestion
+    # Ensure that you can only suggest after you have entered a new room
