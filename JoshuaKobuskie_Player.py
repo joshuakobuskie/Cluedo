@@ -1,5 +1,6 @@
 import random
 import os
+import time
 
 class Player:
     def __init__(self, player_number, character, cards):
@@ -32,6 +33,7 @@ class Player:
         self.cards = cards
         self.accusation = False
         self.moves = 0
+        self.prior_position = self.position
 
     def get_position(self):
         return self.position
@@ -44,6 +46,7 @@ class Player:
     
     def set_position(self, position):
         self.position = position
+        self.prior_position = position
 
     def get_cards(self):
         return self.cards
@@ -68,13 +71,14 @@ class Player:
 
         # Only move if you have not made an accusation
         if self.accusation:
-            print("You have already made an incorrect accusation!")
             self.moves = 0
+            print("Steps remaining: {}".format(self.moves))
+            print("Current position: {}".format(self.position))
+            print("You have already made an incorrect accusation! You have lost the game!")
         else:
             print("You have rolled a {}".format(self.moves))
-
-        print("Steps remaining: {}".format(self.moves))
-        print("Current position: {}".format(self.position))
+            print("Steps remaining: {}".format(self.moves))
+            print("Current position: {}".format(self.position))
         
         while self.moves > 0:
 
@@ -113,7 +117,8 @@ class Player:
             print("Current position: {}".format(self.position))
         
         # Make a suggestion after entering a room
-        if type(self.position) == str:
+        print("Position: {}, prior: {}".format(self.position, self.prior_position))
+        if type(self.position) == str and self.position != self.prior_position:
             print("You have entered the {} and can now make a suggestion!".format(self.position))
             character_selection = ""
             weapon_selection = ""
@@ -156,6 +161,8 @@ class Player:
             weapon_selection = weapons[weapon_selection]
 
             print("You suggest that it was {} in the {} with the {}!".format(character_selection, destination_selection, weapon_selection))
+            time.sleep(5)
+            os.system("cls" if os.name == "nt" else "clear")
 
             # Move suggested player into the room
             for p in board.get_players():
@@ -171,92 +178,97 @@ class Player:
             else:
                 print("No one was able to disprove your suggestion!")
 
+            self.prior_position = self.position
+
 
         # Offer accusation
-        print("Would you like to make your final accusation?")
-        print("Option 1: Yes")
-        print("Option 2: No")
-        accusation_selection = ""
-        while type(accusation_selection) != int:
-            try:
-                accusation_selection = input("Please enter an option number to select if you will make your final accusation: ")
-                accusation_selection = int(accusation_selection)
-                if accusation_selection < 1 or accusation_selection > 2:
+        if not self.accusation:
+            print("Would you like to make your final accusation?")
+            print("Option 1: Yes")
+            print("Option 2: No")
+            accusation_selection = ""
+            while type(accusation_selection) != int:
+                try:
+                    accusation_selection = input("Please enter an option number to select if you will make your final accusation: ")
+                    accusation_selection = int(accusation_selection)
+                    if accusation_selection < 1 or accusation_selection > 2:
+                        print("Invalid selection: Please enter a value between 1 and 2")
+                        accusation_selection = ""
+                    else:
+                        accusation_selection -= 1
+                except ValueError:
                     print("Invalid selection: Please enter a value between 1 and 2")
-                    accusation_selection = ""
-                else:
-                    accusation_selection -= 1
-            except ValueError:
-                print("Invalid selection: Please enter a value between 1 and 2")
 
-        if accusation_selection == 0:
-            character_selection = ""
-            weapon_selection = ""
-            destination_selection = ""
+            if accusation_selection == 0:
+                character_selection = ""
+                weapon_selection = ""
+                destination_selection = ""
 
-            # Character Accusation
-            print("Accuse one of the following characters:")
-            characters = board.get_characters()
-            for i in range(len(characters)):
-                print("Option {}: {}".format(i+1, characters[i]))
-            while type(character_selection) != int:
-                try:
-                    character_selection = input("Please enter an option number to accuse a character: ")
-                    character_selection = int(character_selection)
-                    if character_selection < 1 or character_selection > len(characters):
+                # Character Accusation
+                print("Accuse one of the following characters:")
+                characters = board.get_characters()
+                for i in range(len(characters)):
+                    print("Option {}: {}".format(i+1, characters[i]))
+                while type(character_selection) != int:
+                    try:
+                        character_selection = input("Please enter an option number to accuse a character: ")
+                        character_selection = int(character_selection)
+                        if character_selection < 1 or character_selection > len(characters):
+                            print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
+                            character_selection = ""
+                        else:
+                            character_selection -= 1
+                    except ValueError:
                         print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
-                        character_selection = ""
-                    else:
-                        character_selection -= 1
-                except ValueError:
-                    print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
-            character_selection = characters[character_selection]
-            
-            # Weapon Accusation
-            print("Accuse one of the following weapons:")
-            weapons = board.get_weapons()
-            for i in range(len(weapons)):
-                print("Option {}: {}".format(i+1, weapons[i]))
-            while type(weapon_selection) != int:
-                try:
-                    weapon_selection = input("Please enter an option number to accuse a weapon: ")
-                    weapon_selection = int(weapon_selection)
-                    if weapon_selection < 1 or weapon_selection > len(weapons):
+                character_selection = characters[character_selection]
+                
+                # Weapon Accusation
+                print("Accuse one of the following weapons:")
+                weapons = board.get_weapons()
+                for i in range(len(weapons)):
+                    print("Option {}: {}".format(i+1, weapons[i]))
+                while type(weapon_selection) != int:
+                    try:
+                        weapon_selection = input("Please enter an option number to accuse a weapon: ")
+                        weapon_selection = int(weapon_selection)
+                        if weapon_selection < 1 or weapon_selection > len(weapons):
+                            print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
+                            weapon_selection = ""
+                        else:
+                            weapon_selection -= 1
+                    except ValueError:
                         print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
-                        weapon_selection = ""
-                    else:
-                        weapon_selection -= 1
-                except ValueError:
-                    print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
-            weapon_selection = weapons[weapon_selection]
+                weapon_selection = weapons[weapon_selection]
 
-            # Destination Accusation
-            print("Accuse one of the following rooms:")
-            destinations = board.get_destinations()
-            for i in range(len(destinations)):
-                print("Option {}: {}".format(i+1, destinations[i]))
-            while type(destination_selection) != int:
-                try:
-                    destination_selection = input("Please enter an option number to accuse a room: ")
-                    destination_selection = int(destination_selection)
-                    if destination_selection < 1 or destination_selection > len(destinations):
+                # Destination Accusation
+                print("Accuse one of the following rooms:")
+                destinations = board.get_destinations()
+                for i in range(len(destinations)):
+                    print("Option {}: {}".format(i+1, destinations[i]))
+                while type(destination_selection) != int:
+                    try:
+                        destination_selection = input("Please enter an option number to accuse a room: ")
+                        destination_selection = int(destination_selection)
+                        if destination_selection < 1 or destination_selection > len(destinations):
+                            print("Invalid selection: Please enter a value between 1 and {}".format(len(destinations)))
+                            destination_selection = ""
+                        else:
+                            destination_selection -= 1
+                    except ValueError:
                         print("Invalid selection: Please enter a value between 1 and {}".format(len(destinations)))
-                        destination_selection = ""
-                    else:
-                        destination_selection -= 1
-                except ValueError:
-                    print("Invalid selection: Please enter a value between 1 and {}".format(len(destinations)))
-            destination_selection = destinations[destination_selection]
+                destination_selection = destinations[destination_selection]
 
-            print("You accuse {} in the {} with the {}!".format(character_selection, destination_selection, weapon_selection))
+                print("You accuse {} in the {} with the {}!".format(character_selection, destination_selection, weapon_selection))
 
-            self.accusation = True
+                self.accusation = True
 
-            # Check Accusation
-            if board.accuse(character_selection, weapon_selection, destination_selection):
-                print("You have used your clues and solved the mystery! Congratulations! You win!")
-            else:
-                print("You have missed a critical piece of evidence and made an incorrect accusation! You lose!")
+                # Check Accusation
+                if board.accuse(character_selection, weapon_selection, destination_selection):
+                    print("You have used your clues and solved the mystery! Congratulations! You win!")
+                else:
+                    print("You have missed a critical piece of evidence and made an incorrect accusation! You lose!")
+            time.sleep(5)
+        
 
     def get_info(self):
         print("Hello Player {}!".format(self.player_number))
@@ -266,4 +278,4 @@ class Player:
         print("Cards: {}".format(self.cards))
 
     # STILL NEEDED
-    # Ensure that you can only suggest after you have entered a new room
+    # Add clue to middle of board

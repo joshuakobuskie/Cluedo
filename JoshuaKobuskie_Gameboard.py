@@ -18,10 +18,10 @@ class CluedoBoard:
             ["X","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","X","X","X","X","X","X"],
             ["X","X","X","X","X","H","H","H","H","H","H","H","H","H","H","H","H","H","RE","X","X","X","X","X"],
             ["X","X","X","X","X","X","X","X","H","H","X","X","X","X","X","H","H","H","X","X","X","X","X","X"],
-            ["X","ZD","ZI","ZN","ZE","ZR","ZM","X","H","H","X","X","X","X","X","H","H","H","X","ZB","ZL","ZR","ZD","X"],
-            ["X","X","X","X","X","X","X","LD","H","H","X","X","X","X","X","H","H","H","X","X","X","X","UE","X"],
-            ["X","X","X","X","X","X","X","X","H","H","X","X","X","X","X","H","H","H","H","H","H","H","H","X"],
-            ["X","X","X","X","X","X","X","X","H","H","X","X","X","X","X","H","H","H","X","X","DF","X","X","X"],
+            ["X","ZD","ZI","ZN","ZE","ZR","ZM","X","H","H","X","X","ZC","X","X","H","H","H","X","ZB","ZL","ZR","ZD","X"],
+            ["X","X","X","X","X","X","X","LD","H","H","X","X","X","ZL","X","H","H","H","X","X","X","X","UE","X"],
+            ["X","X","X","X","X","X","X","X","H","H","X","X","X","ZU","X","H","H","H","H","H","H","H","H","X"],
+            ["X","X","X","X","X","X","X","X","H","H","X","X","X","ZE","X","H","H","H","X","X","DF","X","X","X"],
             ["X","X","X","X","X","X","UD","X","H","H","X","X","X","X","X","H","H","X","ZL","ZI","ZB","ZR","ZY","X"],
             ["X","H","H","H","H","H","H","H","H","H","X","X","X","X","X","H","H","RF","X","X","X","X","X","X"],
             ["H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","X","X","X","X","X","X","X"],
@@ -87,10 +87,9 @@ class CluedoBoard:
         blocked = []
         for p in self.players:
             p_location = p.get_position()
-            if type(p_location) == str:
-                for p_position in self.room_positions[p_location]:
-                    blocked.append(p_position)
-            else:
+
+            # Only block tiles, not rooms
+            if type(p_location) != str:
                 blocked.append(p_location)
 
         # Convert rooms to positions
@@ -229,7 +228,7 @@ class CluedoBoard:
             hand = self.players[cur].get_cards()
             if character_selection in hand or destination_selection in hand or weapon_selection in hand:
                 player_number = self.players[cur].get_player_number()
-                print("Player {} has a card that could disprove your suggestion! Please pass the device to Player {}!".format(player_number, player_number))
+                print("Player {} has a card that could disprove your suggestion! Please pass the device to Player {}.".format(player_number, player_number))
                 time.sleep(10)
                 os.system("cls" if os.name == "nt" else "clear")
                 print("Player {} has suggested that it was {} in the {} with the {}.".format(suggestor_number, character_selection, destination_selection, weapon_selection))
@@ -256,8 +255,9 @@ class CluedoBoard:
                     except ValueError:
                         print("Invalid selection: Please enter a value between 1 and {}".format(len(options)))
             
+                os.system("cls" if os.name == "nt" else "clear")
                 print("You will show the {} to disprove Player {}'s suggestion. Please pass the device to Player {}.".format(options[card_selection], suggestor_number, suggestor_number))
-                time.sleep(10)
+                time.sleep(5)
                 os.system("cls" if os.name == "nt" else "clear")
                 return [True, self.players[cur].get_player_number(), options[card_selection]]
         

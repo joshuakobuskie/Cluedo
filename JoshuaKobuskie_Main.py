@@ -25,6 +25,8 @@ def main():
     # board.print_board(players)
 
     # REAL CODE STARTS HERE
+    os.system("cls" if os.name == "nt" else "clear")
+
     board = CluedoBoard()
 
     print("Welcome to Cluedo!")
@@ -41,13 +43,18 @@ def main():
     
     board.setup(player_count)
 
-    print("The game is about to begin! Please pass the device to Player 1!")
+    print("The game is about to begin! Please pass the device to Player 1.")
     time.sleep(5)
 
     while board.get_play():
         current_player = board.get_current_player()
         current_player.move(board)
+        os.system("cls" if os.name == "nt" else "clear")
         board.next_player()
+        current_player = board.get_current_player()
+        print("Your turn is over. Please pass the device to Player {}.".format(current_player.get_player_number()))
+        time.sleep(5)
+        os.system("cls" if os.name == "nt" else "clear")
 
 if __name__ == "__main__":
     main()
