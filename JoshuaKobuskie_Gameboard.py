@@ -256,7 +256,7 @@ class CluedoBoard:
                         print("Invalid selection: Please enter a value between 1 and {}".format(len(options)))
             
                 os.system("cls" if os.name == "nt" else "clear")
-                print("You will show the {} to disprove Player {}'s suggestion. Please pass the device to Player {}.".format(options[card_selection], suggestor_number, suggestor_number))
+                print("You will show the {} card to disprove Player {}'s suggestion. Please pass the device to Player {}.".format(options[card_selection], suggestor_number, suggestor_number))
                 time.sleep(5)
                 os.system("cls" if os.name == "nt" else "clear")
                 return [True, self.players[cur].get_player_number(), options[card_selection]]

@@ -46,7 +46,6 @@ class Player:
     
     def set_position(self, position):
         self.position = position
-        self.prior_position = position
 
     def get_cards(self):
         return self.cards
@@ -79,11 +78,17 @@ class Player:
             print("You have rolled a {}".format(self.moves))
             print("Steps remaining: {}".format(self.moves))
             print("Current position: {}".format(self.position))
+
+        # Handle getting pulled to a new room
+        possible_moves = []
+        if self.position != self.prior_position:
+            possible_moves.append(["Stay", self.position])
         
         while self.moves > 0:
 
             # Determine open squares
-            possible_moves = board.check_moves(self)
+            possible_moves.extend(board.check_moves(self))
+
             for i in range(len(possible_moves)):
                 print("Option {}: Move {} to {}".format(i+1, possible_moves[i][0], possible_moves[i][1]))
 
@@ -115,9 +120,9 @@ class Player:
 
             print("Steps remaining: {}".format(self.moves))
             print("Current position: {}".format(self.position))
+            possible_moves = []
         
         # Make a suggestion after entering a room
-        print("Position: {}, prior: {}".format(self.position, self.prior_position))
         if type(self.position) == str and self.position != self.prior_position:
             print("You have entered the {} and can now make a suggestion!".format(self.position))
             character_selection = ""
@@ -179,7 +184,8 @@ class Player:
                 print("No one was able to disprove your suggestion!")
 
             self.prior_position = self.position
-
+        elif type(self.position) == str and self.position == self.prior_position:
+            print("You have reentered the {} and cannot make another suggestion in this room until you visit another room.".format(self.position))
 
         # Offer accusation
         if not self.accusation:
@@ -278,4 +284,3 @@ class Player:
         print("Cards: {}".format(self.cards))
 
     # STILL NEEDED
-    # Add clue to middle of board
