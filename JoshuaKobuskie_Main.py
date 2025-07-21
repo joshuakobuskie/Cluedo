@@ -5,26 +5,6 @@ import time
 
 def main():
 
-    # FOR TESTING USE ONLY
-    # board = CluedoBoard()
-    # board.print_board()
-    # print(board.check_moves([17, 12]))
-    # print(board.check_moves([18, 6]))
-    # print(board.check_moves([19, 6]))
-    # print(board.check_moves("Hall"))
-    # print(board.check_moves("Ballroom"))
-    # print(board.check_moves("Kitchen"))
-
-    # players = [Player("Miss Scarlett", [])]
-    # players[0].position = [17,11]
-    # player2 = Player("Mrs. White", [])
-    # player2.position = "Hall"
-    # players.append(player2)
-    # board = CluedoBoard()
-    # print(board.check_moves(players[1], players))
-    # board.print_board(players)
-
-    # REAL CODE STARTS HERE
     os.system("cls" if os.name == "nt" else "clear")
 
     board = CluedoBoard()
@@ -58,12 +38,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    # This is going to move into a while loop in main later
-    # Use to clear screen between turns
-    # os.system("cls" if os.name == "nt" else "clear")
-    # print("Your turn is over! Please pass the device to the next player")
-    # time.sleep(5)
-    # os.system("cls" if os.name == "nt" else "clear")
-
-    # main()

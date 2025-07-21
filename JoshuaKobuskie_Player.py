@@ -282,5 +282,3 @@ class Player:
         print("Color/Symbol: {}".format(self.color))
         print("Position: {}".format(self.position))
         print("Cards: {}".format(self.cards))
-
-    # STILL NEEDED

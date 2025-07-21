@@ -261,4 +261,4 @@ class CluedoBoard:
                 os.system("cls" if os.name == "nt" else "clear")
                 return [True, self.players[cur].get_player_number(), options[card_selection]]
         
-        return [False]        
+        return [False]
