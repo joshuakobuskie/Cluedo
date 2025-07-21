@@ -13,7 +13,7 @@ def main():
     player_count = ""
     while type(player_count) != int:
         try:
-            player_count = input("Please enter the number of players: ")
+            player_count = input("Please enter the number of players between 1 and 6: ")
             player_count = int(player_count)
             if player_count < 1 or player_count > 6:
                 print("Invalid selection: Please enter a value between 1 and 6")
