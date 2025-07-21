@@ -21,3 +21,4 @@ Necessary libraries:
     * Make suggestions after entering a room
     * Select cards to disprove suggestions
     * Make a final accusation
+5. Continuing gameplay: Continue to play the Cluedo game by passing the device to the appropriate player, making movements and suggestions, and keeping track of your clues along the way. When you are ready, make your final accusation using the evidence you have gathered, and attempt to solve the mystery! If you correctly identify the murderer, weapon, and the room in which the murder occurred, you win the game! If you falsely accuse someone, you lose! Good luck and have fun!
