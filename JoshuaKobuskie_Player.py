@@ -34,6 +34,7 @@ class Player:
         self.accusation = False
         self.moves = 0
         self.prior_position = self.position
+        self.revealed = []
 
     def get_position(self):
         return self.position
@@ -180,6 +181,7 @@ class Player:
             if disprove[0]:
                 print("Your suggestion was incorrect!")
                 print("Player {} revealed the card: {}".format(disprove[1], disprove[2]))
+                self.revealed.append(disprove[2])
             else:
                 print("No one was able to disprove your suggestion!")
 
@@ -282,3 +284,7 @@ class Player:
         print("Color/Symbol: {}".format(self.color))
         print("Position: {}".format(self.position))
         print("Cards: {}".format(self.cards))
+        print("Revealed Cards from Other Players: {}".format(self.revealed))
+
+# STILL NEEDED
+# Add an AI agent that plays if there are less than 6 players
