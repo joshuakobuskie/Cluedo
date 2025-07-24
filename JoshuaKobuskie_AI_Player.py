@@ -5,12 +5,14 @@ class AI_Player(Player):
 
         # Create player
         super().__init__(player_number, character, cards)
+
+        self.player_count = player_count
         
         # Create knowledge base
         # Clue solution is player 0
-        self.possible_characters = {"Miss Scarlett":[i for i in range(player_count+1)], "Colonel Mustard":[i for i in range(player_count+1)], "Mrs. White":[i for i in range(player_count+1)], "Reverend Green":[i for i in range(player_count+1)], "Mrs. Peacock":[i for i in range(player_count+1)], "Professor Plum":[i for i in range(player_count+1)]}
-        self.possible_weapons = {"Candlestick Holder":[i for i in range(player_count+1)], "Knife":[i for i in range(player_count+1)], "Lead Pipe":[i for i in range(player_count+1)], "Revolver":[i for i in range(player_count+1)], "Rope":[i for i in range(player_count+1)], "Wrench":[i for i in range(player_count+1)]}
-        self.possible_rooms = {"Kitchen":[i for i in range(player_count+1)], "Ballroom":[i for i in range(player_count+1)], "Conservatory":[i for i in range(player_count+1)], "Dining Room":[i for i in range(player_count+1)], "Billiard Room":[i for i in range(player_count+1)], "Library":[i for i in range(player_count+1)], "Lounge":[i for i in range(player_count+1)], "Hall":[i for i in range(player_count+1)], "Study":[i for i in range(player_count+1)]}
+        self.possible_characters = {"Miss Scarlett":[i for i in range(self.player_count+1)], "Colonel Mustard":[i for i in range(self.player_count+1)], "Mrs. White":[i for i in range(self.player_count+1)], "Reverend Green":[i for i in range(self.player_count+1)], "Mrs. Peacock":[i for i in range(self.player_count+1)], "Professor Plum":[i for i in range(self.player_count+1)]}
+        self.possible_weapons = {"Candlestick Holder":[i for i in range(self.player_count+1)], "Knife":[i for i in range(self.player_count+1)], "Lead Pipe":[i for i in range(self.player_count+1)], "Revolver":[i for i in range(self.player_count+1)], "Rope":[i for i in range(self.player_count+1)], "Wrench":[i for i in range(self.player_count+1)]}
+        self.possible_rooms = {"Kitchen":[i for i in range(self.player_count+1)], "Ballroom":[i for i in range(self.player_count+1)], "Conservatory":[i for i in range(self.player_count+1)], "Dining Room":[i for i in range(self.player_count+1)], "Billiard Room":[i for i in range(self.player_count+1)], "Library":[i for i in range(self.player_count+1)], "Lounge":[i for i in range(self.player_count+1)], "Hall":[i for i in range(self.player_count+1)], "Study":[i for i in range(self.player_count+1)]}
 
         # Remove already known cards from the AI knowledge base
         for card in self.cards:
@@ -32,14 +34,16 @@ class AI_Player(Player):
     def remove_suggestion(self, disprover, card):
         # Remove players who could not refute a card
         current_player = self.player_number
-        while current_player < disprover:
-            if card in self.possible_characters:
+        while current_player != disprover:
+            if card in self.possible_characters and current_player in self.possible_characters[card]:
                 self.possible_characters[card].remove(current_player)
-            elif card in self.possible_weapons:
+            elif card in self.possible_weapons and current_player in self.possible_weapons[card]:
                 self.possible_weapons[card].remove(current_player)
-            elif card in self.possible_rooms:
+            elif card in self.possible_rooms and current_player in self.possible_rooms[card]:
                 self.possible_rooms[card].remove(current_player)
             current_player += 1
+            current_player = current_player % (self.player_count+1)
+            print(current_player)
 
         # Update the known card holder
         if card in self.possible_characters:
@@ -49,7 +53,9 @@ class AI_Player(Player):
         elif card in self.possible_rooms:
             self.possible_rooms[card] = [disprover]
 
-test = AI_Player(2, "Miss Scarlett", ['Mrs. Peacock', 'Candlestick Holder', 'Wrench', 'Kitchen', 'Colonel Mustard', 'Rope', 'Lead Pipe', 'Dining Room', 'Hall'], 2)
+test = AI_Player(2, "Miss Scarlett", ['Mrs. Peacock', 'Candlestick Holder', 'Wrench', 'Kitchen', 'Colonel Mustard', 'Rope', 'Lead Pipe', 'Dining Room', 'Hall'], 3)
 print(test.possible_characters)
 print(test.possible_weapons)
+print(test.possible_rooms)
+test.remove_suggestion(1, "Billiard Room")
 print(test.possible_rooms)
