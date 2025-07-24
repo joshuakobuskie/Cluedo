@@ -3,6 +3,7 @@ import numpy as np
 from JoshuaKobuskie_Player import Player
 import time
 import os
+from JoshuaKobuskie_AI_Player import AI_Player
 
 class CluedoBoard:
     def __init__(self):
@@ -175,8 +176,11 @@ class CluedoBoard:
         cards = [card_set.tolist() for card_set in cards]
         
         # Assigns players and deals
-        for i in range(player_count):
+        for i in range(player_count-1):
             self.players.append(Player(i+1, characters.pop(), cards[i]))
+
+        # Add AI player
+        self.players.append(AI_Player(player_count, characters.pop(), cards[player_count-1]))
 
         # Add the solution cards back into the reference deck
         self.characters = temp_characters
