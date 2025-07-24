@@ -7,6 +7,10 @@ class AI_Player(Player):
         super().__init__(player_number, character, cards)
 
         self.player_count = player_count
+
+        self.accuse_character = None
+        self.accuse_weapon = None
+        self.accuse_room = None
         
         # Create knowledge base
         # Clue solution is player 0
@@ -16,7 +20,12 @@ class AI_Player(Player):
 
         # Remove already known cards from the AI knowledge base
         for card in self.cards:
-            self.remove_suggestion(self.player_number, card)
+            if card in self.possible_characters:
+                self.possible_characters[card] = [self.player_number]
+            elif card in self.possible_weapons:
+                self.possible_weapons[card] = [self.player_number]
+            elif card in self.possible_rooms:
+                self.possible_rooms[card] = [self.player_number]
 
         # Remove cards AI knows that it doesnt have
         for character, candidates in self.possible_characters.items():
@@ -31,20 +40,10 @@ class AI_Player(Player):
             if candidates != [self.player_number]:
                 self.possible_rooms[room].remove(self.player_number)
 
-    def remove_suggestion(self, disprover, card):
-        # Remove players who could not refute a card
-        current_player = self.player_number
-        while current_player != disprover:
-            if card in self.possible_characters and current_player in self.possible_characters[card]:
-                self.possible_characters[card].remove(current_player)
-            elif card in self.possible_weapons and current_player in self.possible_weapons[card]:
-                self.possible_weapons[card].remove(current_player)
-            elif card in self.possible_rooms and current_player in self.possible_rooms[card]:
-                self.possible_rooms[card].remove(current_player)
-            current_player += 1
-            current_player = current_player % (self.player_count+1)
-            print(current_player)
+        self.check_solution()
 
+    def remove_suggestion(self, disprover, card):
+        # If disprover is the same player, then the card must be in the solution or AI hand
         # Update the known card holder
         if card in self.possible_characters:
             self.possible_characters[card] = [disprover]
@@ -52,10 +51,40 @@ class AI_Player(Player):
             self.possible_weapons[card] = [disprover]
         elif card in self.possible_rooms:
             self.possible_rooms[card] = [disprover]
+            
+        self.check_solution()
+
+    def check_player_card_count():
+        # This should implement the logic to reduce the selection size
+        # If the maximum number of player cards has been reached for a player, they cant have any more cards here so they can be eliminated from the other options
+        return 0
+
+    def infer_suggestion(self, suggestor, disprover, card):
+        # This is going to be considered if two other players make a suggestion and disprove it without involving the AI
+        self.check_solution()
+        return 0
+
+    def check_solution(self):
+        for card, candidates in self.possible_characters.items():
+            if candidates == [0]:
+                self.accuse_character = card
+        
+        for card, candidates in self.possible_weapons.items():
+            if candidates == [0]:
+                self.accuse_weapon = card
+        
+        for card, candidates in self.possible_rooms.items():
+            if candidates == [0]:
+                self.accuse_room = card
+
+        # If we are confident on the solution, make the final accusation
+        if self.accuse_character and self.accuse_weapon and self.accuse_room:
+            print("ACCUSATION LOGIC HERE")
+
 
 test = AI_Player(2, "Miss Scarlett", ['Mrs. Peacock', 'Candlestick Holder', 'Wrench', 'Kitchen', 'Colonel Mustard', 'Rope', 'Lead Pipe', 'Dining Room', 'Hall'], 3)
 print(test.possible_characters)
+print(test.possible_rooms)
 print(test.possible_weapons)
-print(test.possible_rooms)
-test.remove_suggestion(1, "Billiard Room")
-print(test.possible_rooms)
+test.remove_suggestion(1, "Knife")
+print(test.possible_weapons)
