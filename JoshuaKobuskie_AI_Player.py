@@ -183,6 +183,8 @@ class AI_Player(Player):
             print("Steps remaining: {}".format(self.moves))
             print("Current position: {}".format(self.position))
             possible_moves = []
+
+            time.sleep(1)
         
         # CHANGE AFTER HERE AS WELL
 
