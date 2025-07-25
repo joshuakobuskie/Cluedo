@@ -42,8 +42,38 @@ class AI_Player(Player):
 
         self.check_solution()
 
-    def remove_suggestion(self, disprover, card):
+    def remove_suggestion(self, disprover, card, other_1, other_2):
         # If disprover is the same player, then the card must be in the solution or AI hand
+
+        current_player = self.player_number + 1
+        current_player = current_player % (self.player_count+1)
+
+        # Remove people who could not disprove and therefore dont have one of the other cards asked for
+        while current_player < disprover:
+
+            if current_player != 0:
+                # Update characters
+                if other_1 in self.possible_characters and current_player in self.possible_characters[other_1]:
+                    self.possible_characters[other_1].remove(current_player)
+                if other_2 in self.possible_characters and current_player in self.possible_characters[other_2]:
+                    self.possible_characters[other_2].remove(current_player)
+
+                # Update weapons
+                if other_1 in self.possible_weapons and current_player in self.possible_weapons[other_1]:
+                    self.possible_weapons[other_1].remove(current_player)
+                if other_2 in self.possible_weapons and current_player in self.possible_weapons[other_2]:
+                    self.possible_weapons[other_2].remove(current_player)
+
+                # Update rooms
+                if other_1 in self.possible_rooms and current_player in self.possible_rooms[other_1]:
+                    self.possible_rooms[other_1].remove(current_player)
+                if other_2 in self.possible_rooms and current_player in self.possible_rooms[other_2]:
+                    self.possible_rooms[other_2].remove(current_player)
+            
+            current_player += 1
+            current_player = current_player % (self.player_count+1)
+            
+
         # Update the known card holder
         if card in self.possible_characters:
             self.possible_characters[card] = [disprover]
@@ -82,9 +112,12 @@ class AI_Player(Player):
             print("ACCUSATION LOGIC HERE")
 
 
-test = AI_Player(2, "Miss Scarlett", ['Mrs. Peacock', 'Candlestick Holder', 'Wrench', 'Kitchen', 'Colonel Mustard', 'Rope', 'Lead Pipe', 'Dining Room', 'Hall'], 3)
+test = AI_Player(3, "Miss Scarlett", ['Mrs. Peacock', 'Candlestick Holder', 'Wrench', 'Kitchen', 'Colonel Mustard', 'Rope', 'Lead Pipe', 'Dining Room', 'Hall'], 3)
 print(test.possible_characters)
 print(test.possible_rooms)
 print(test.possible_weapons)
-test.remove_suggestion(1, "Knife")
+test.remove_suggestion(2, "Knife", "Mrs. White", "Ballroom")
+print()
+print(test.possible_characters)
+print(test.possible_rooms)
 print(test.possible_weapons)
