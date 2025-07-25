@@ -1,6 +1,7 @@
 from JoshuaKobuskie_Player import Player
 import os
 import random
+import time
 
 class AI_Player(Player):
     def __init__(self, player_number, character, cards, player_count):
