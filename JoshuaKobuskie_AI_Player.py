@@ -160,11 +160,12 @@ class AI_Player(Player):
                     best_room = room
 
             # The best room with the shortest distance has been found and the move to get there now can be selected
-            for move in possible_moves:
-
-
-            selection = 0
-            ### Change here
+            best_distance = float("inf")
+            for i in range(len(possible_moves)):
+                distance = self.distance_to_room(possible_moves[i][1], board, best_room)
+                if distance < best_distance:
+                    best_distance = distance
+                    selection = i
             
             # Take step and save new position
             self.position = possible_moves[selection][1]
