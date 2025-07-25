@@ -1,4 +1,6 @@
 from JoshuaKobuskie_Player import Player
+import os
+import random
 
 class AI_Player(Player):
     def __init__(self, player_number, character, cards, player_count):
@@ -111,6 +113,246 @@ class AI_Player(Player):
         if self.accuse_character and self.accuse_weapon and self.accuse_room:
             print("ACCUSATION LOGIC HERE")
 
+    def move(self, board):
+        # Roll for number of moves
+
+        # IMPORTANT: Using testing value as 100
+        # Replace with the following
+        # self.moves = random.randint(1, 6)
+        self.moves = 100
+
+        os.system("cls" if os.name == "nt" else "clear")
+        board.print_board()
+        self.get_info()
+
+        # Only move if you have not made an accusation
+        if self.accusation:
+            self.moves = 0
+            print("Steps remaining: {}".format(self.moves))
+            print("Current position: {}".format(self.position))
+            print("The AI has already made an incorrect accusation! It has has lost the game!")
+        else:
+            print("The AI has rolled a {}".format(self.moves))
+            print("Steps remaining: {}".format(self.moves))
+            print("Current position: {}".format(self.position))
+
+        # Handle getting pulled to a new room
+        possible_moves = []
+        if self.position != self.prior_position:
+            possible_moves.append(["Stay", self.position])
+        
+        while self.moves > 0:
+
+            # Determine open squares
+            possible_moves.extend(board.check_moves(self))
+
+            # Determine the best step to take in order to get close the the next room to explore
+            
+            all_doors = board.get_doors()
+
+            # The best rooms to explore are those that could still be the solution, with the least possible unknowns
+            # This gives the highest odds of ruling out a room
+            # Change this to find the best room
+            room = random.choice(self.possible_rooms.keys())
+
+            selection = 0
+            ### Change here
+            
+            # Take step and save new position
+            self.position = possible_moves[selection][1]
+            self.moves -= 1
+
+            # Set moves to 0 if they enter a room and set their room state
+            if type(possible_moves[selection][1]) == str:
+                self.moves = 0
+                
+            os.system("cls" if os.name == "nt" else "clear")
+            board.print_board()
+            self.get_info()
+
+            print("Steps remaining: {}".format(self.moves))
+            print("Current position: {}".format(self.position))
+            possible_moves = []
+        
+        # CHANGE AFTER HERE AS WELL
+
+        # Make a suggestion after entering a room
+        if type(self.position) == str and self.position != self.prior_position:
+            print("You have entered the {} and can now make a suggestion!".format(self.position))
+            character_selection = ""
+            weapon_selection = ""
+            destination_selection = self.position
+
+            # Character suggestion
+            print("Suggest one of the following characters:")
+            characters = board.get_characters()
+            for i in range(len(characters)):
+                print("Option {}: {}".format(i+1, characters[i]))
+            while type(character_selection) != int:
+                try:
+                    character_selection = input("Please enter an option number to suggest a character: ")
+                    character_selection = int(character_selection)
+                    if character_selection < 1 or character_selection > len(characters):
+                        print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
+                        character_selection = ""
+                    else:
+                        character_selection -= 1
+                except ValueError:
+                    print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
+            character_selection = characters[character_selection]
+            
+            # Weapon Suggestion
+            print("Suggest one of the following weapons:")
+            weapons = board.get_weapons()
+            for i in range(len(weapons)):
+                print("Option {}: {}".format(i+1, weapons[i]))
+            while type(weapon_selection) != int:
+                try:
+                    weapon_selection = input("Please enter an option number to suggest a weapon: ")
+                    weapon_selection = int(weapon_selection)
+                    if weapon_selection < 1 or weapon_selection > len(weapons):
+                        print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
+                        weapon_selection = ""
+                    else:
+                        weapon_selection -= 1
+                except ValueError:
+                    print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
+            weapon_selection = weapons[weapon_selection]
+
+            print("You suggest that it was {} in the {} with the {}!".format(character_selection, destination_selection, weapon_selection))
+            time.sleep(5)
+            os.system("cls" if os.name == "nt" else "clear")
+
+            # Move suggested player into the room
+            for p in board.get_players():
+                if p.get_character() == character_selection:
+                    p.set_position(destination_selection)
+
+            # Disprove guess
+            disprove = board.disprove(self.player_number, character_selection, destination_selection, weapon_selection)
+
+            if disprove[0]:
+                print("Your suggestion was incorrect!")
+                print("Player {} revealed the card: {}".format(disprove[1], disprove[2]))
+                self.revealed.append(disprove[2])
+            else:
+                print("No one was able to disprove your suggestion!")
+
+            self.prior_position = self.position
+        elif type(self.position) == str and self.position == self.prior_position:
+            print("You have reentered the {} and cannot make another suggestion in this room until you visit another room.".format(self.position))
+
+        # Offer accusation
+        if not self.accusation:
+            print("Would you like to make your final accusation?")
+            print("Option 1: Yes")
+            print("Option 2: No")
+            accusation_selection = ""
+            while type(accusation_selection) != int:
+                try:
+                    accusation_selection = input("Please enter an option number to select if you will make your final accusation: ")
+                    accusation_selection = int(accusation_selection)
+                    if accusation_selection < 1 or accusation_selection > 2:
+                        print("Invalid selection: Please enter a value between 1 and 2")
+                        accusation_selection = ""
+                    else:
+                        accusation_selection -= 1
+                except ValueError:
+                    print("Invalid selection: Please enter a value between 1 and 2")
+
+            if accusation_selection == 0:
+                character_selection = ""
+                weapon_selection = ""
+                destination_selection = ""
+
+                # Character Accusation
+                print("Accuse one of the following characters:")
+                characters = board.get_characters()
+                for i in range(len(characters)):
+                    print("Option {}: {}".format(i+1, characters[i]))
+                while type(character_selection) != int:
+                    try:
+                        character_selection = input("Please enter an option number to accuse a character: ")
+                        character_selection = int(character_selection)
+                        if character_selection < 1 or character_selection > len(characters):
+                            print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
+                            character_selection = ""
+                        else:
+                            character_selection -= 1
+                    except ValueError:
+                        print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
+                character_selection = characters[character_selection]
+                
+                # Weapon Accusation
+                print("Accuse one of the following weapons:")
+                weapons = board.get_weapons()
+                for i in range(len(weapons)):
+                    print("Option {}: {}".format(i+1, weapons[i]))
+                while type(weapon_selection) != int:
+                    try:
+                        weapon_selection = input("Please enter an option number to accuse a weapon: ")
+                        weapon_selection = int(weapon_selection)
+                        if weapon_selection < 1 or weapon_selection > len(weapons):
+                            print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
+                            weapon_selection = ""
+                        else:
+                            weapon_selection -= 1
+                    except ValueError:
+                        print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
+                weapon_selection = weapons[weapon_selection]
+
+                # Destination Accusation
+                print("Accuse one of the following rooms:")
+                destinations = board.get_destinations()
+                for i in range(len(destinations)):
+                    print("Option {}: {}".format(i+1, destinations[i]))
+                while type(destination_selection) != int:
+                    try:
+                        destination_selection = input("Please enter an option number to accuse a room: ")
+                        destination_selection = int(destination_selection)
+                        if destination_selection < 1 or destination_selection > len(destinations):
+                            print("Invalid selection: Please enter a value between 1 and {}".format(len(destinations)))
+                            destination_selection = ""
+                        else:
+                            destination_selection -= 1
+                    except ValueError:
+                        print("Invalid selection: Please enter a value between 1 and {}".format(len(destinations)))
+                destination_selection = destinations[destination_selection]
+
+                print("You accuse {} in the {} with the {}!".format(character_selection, destination_selection, weapon_selection))
+
+                self.accusation = True
+
+                # Check Accusation
+                if board.accuse(character_selection, weapon_selection, destination_selection):
+                    print("You have used your clues and solved the mystery! Congratulations! You win!")
+                else:
+                    print("You have missed a critical piece of evidence and made an incorrect accusation! You lose!")
+            time.sleep(5)
+
+    def get_info(self):
+        super().get_info()
+        print("Player {} is an AI".format(self.player_number))
+
+    def distance_to_room(self, board, room):
+        min_distance = float("inf")
+        doors = board.get_doors()
+        target_doors = doors[room]
+        
+        if type(self.position) == str:
+            # If in a room, use its doors as starting points
+            current_doors = doors[self.position]
+            for current_door in current_doors:
+                for target_door in target_doors:
+                    distance = abs(current_door[0]-target_door[0]) + abs(current_door[1]-target_door[1])
+                    min_distance = min(min_distance, distance)
+        else:
+            # In hallway
+            for target_door in target_doors:
+                distance = abs(self.position[0]-target_door[0]) + abs(self.position[1]-target_door[1])
+                min_distance = min(min_distance, distance)
+                
+        return min_distance
 
 test = AI_Player(3, "Miss Scarlett", ['Mrs. Peacock', 'Candlestick Holder', 'Wrench', 'Kitchen', 'Colonel Mustard', 'Rope', 'Lead Pipe', 'Dining Room', 'Hall'], 3)
 print(test.possible_characters)
