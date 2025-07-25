@@ -146,14 +146,22 @@ class AI_Player(Player):
             # Determine open squares
             possible_moves.extend(board.check_moves(self))
 
-            # Determine the best step to take in order to get close the the next room to explore
-            
-            all_doors = board.get_doors()
+            # Determine the best room to visit in order to pick the next movement
+            # Only search rooms where the solution may be
+            candidate_rooms = [room for room, candidates in self.possible_rooms.items() if 0 in candidates]
+                
+            # Select closest room from candidates
+            best_room = None
+            best_distance = float("inf")
+            for room in candidate_rooms:
+                distance = self.distance_to_room(self.position, board, room)
+                if distance < best_distance:
+                    best_distance = distance
+                    best_room = room
 
-            # The best rooms to explore are those that could still be the solution, with the least possible unknowns
-            # This gives the highest odds of ruling out a room
-            # Change this to find the best room
-            room = random.choice(self.possible_rooms.keys())
+            # The best room with the shortest distance has been found and the move to get there now can be selected
+            for move in possible_moves:
+
 
             selection = 0
             ### Change here
@@ -334,14 +342,14 @@ class AI_Player(Player):
         super().get_info()
         print("Player {} is an AI".format(self.player_number))
 
-    def distance_to_room(self, board, room):
+    def distance_to_room(position, board, room):
         min_distance = float("inf")
         doors = board.get_doors()
         target_doors = doors[room]
         
-        if type(self.position) == str:
+        if type(position) == str:
             # If in a room, use its doors as starting points
-            current_doors = doors[self.position]
+            current_doors = doors[position]
             for current_door in current_doors:
                 for target_door in target_doors:
                     distance = abs(current_door[0]-target_door[0]) + abs(current_door[1]-target_door[1])
@@ -349,7 +357,7 @@ class AI_Player(Player):
         else:
             # In hallway
             for target_door in target_doors:
-                distance = abs(self.position[0]-target_door[0]) + abs(self.position[1]-target_door[1])
+                distance = abs(position[0]-target_door[0]) + abs(position[1]-target_door[1])
                 min_distance = min(min_distance, distance)
                 
         return min_distance
