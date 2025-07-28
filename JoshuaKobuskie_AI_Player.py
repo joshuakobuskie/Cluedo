@@ -107,7 +107,6 @@ class AI_Player(Player):
                 self.possible_weapons[other_2] = [0]
             elif other_2 in self.possible_rooms:
                 self.possible_rooms[other_2] = [0]
-
             
         self.check_solution()
 
@@ -125,7 +124,7 @@ class AI_Player(Player):
         # Save and update all other entries if solution found
         if self.accuse_character:
             for card, candidates in self.possible_characters.items():
-                if 0 in candidates:
+                if 0 in candidates and candidates != [0]:
                     self.possible_characters[card].remove(0)
 
         for card, candidates in self.possible_weapons.items():
@@ -134,7 +133,7 @@ class AI_Player(Player):
 
         if self.accuse_weapon:
             for card, candidates in self.possible_weapons.items():
-                if 0 in candidates:
+                if 0 in candidates and candidates != [0]:
                     self.possible_weapons[card].remove(0)
         
         for card, candidates in self.possible_rooms.items():
@@ -143,7 +142,7 @@ class AI_Player(Player):
 
         if self.accuse_room:
             for card, candidates in self.possible_rooms.items():
-                if 0 in candidates:
+                if 0 in candidates and candidates != [0]:
                     self.possible_rooms[card].remove(0)
 
     def move(self, board):
@@ -297,12 +296,18 @@ class AI_Player(Player):
                 
         return min_distance
 
-test = AI_Player(3, "Miss Scarlett", ['Mrs. Peacock', 'Candlestick Holder', 'Wrench', 'Kitchen', 'Colonel Mustard', 'Rope', 'Lead Pipe', 'Dining Room', 'Hall'], 3)
-print(test.possible_characters)
-print(test.possible_rooms)
-print(test.possible_weapons)
-test.remove_suggestion(2, "Knife", "Mrs. White", "Ballroom")
-print()
-print(test.possible_characters)
-print(test.possible_rooms)
-print(test.possible_weapons)
+# test = AI_Player(3, "Miss Scarlett", ['Mrs. Peacock', 'Candlestick Holder', 'Wrench', 'Kitchen', 'Colonel Mustard', 'Rope', 'Lead Pipe', 'Dining Room', 'Hall'], 3)
+# print(test.possible_characters)
+# print(test.possible_rooms)
+# print(test.possible_weapons)
+# test.remove_suggestion(2, "Knife", "Mrs. White", "Ballroom")
+# print()
+# print(test.possible_characters)
+# print(test.possible_rooms)
+# print(test.possible_weapons)
+# test.remove_suggestion(3, "Revolver", "Mrs. White", "Library")
+# print()
+# print(test.possible_characters)
+# print(test.possible_rooms)
+# print(test.possible_weapons)
+# print()

@@ -285,6 +285,3 @@ class Player:
         print("Position: {}".format(self.position))
         print("Cards: {}".format(self.cards))
         print("Revealed Cards from Other Players: {}".format(self.revealed))
-
-# STILL NEEDED
-# Add an AI agent that plays if there are less than 6 players
