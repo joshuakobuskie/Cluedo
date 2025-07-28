@@ -78,23 +78,42 @@ class AI_Player(Player):
             
 
         # Update the known card holder
-        if card in self.possible_characters:
-            self.possible_characters[card] = [disprover]
-        elif card in self.possible_weapons:
-            self.possible_weapons[card] = [disprover]
-        elif card in self.possible_rooms:
-            self.possible_rooms[card] = [disprover]
+        if disprover != self.player_number:
+            if card in self.possible_characters:
+                self.possible_characters[card] = [disprover]
+            elif card in self.possible_weapons:
+                self.possible_weapons[card] = [disprover]
+            elif card in self.possible_rooms:
+                self.possible_rooms[card] = [disprover]
+        # If disprover is self, then we must have found the solution
+        else:
+            if card in self.possible_characters:
+                self.possible_characters[card] = [0]
+            elif card in self.possible_weapons:
+                self.possible_weapons[card] = [0]
+            elif card in self.possible_rooms:
+                self.possible_rooms[card] = [0]
+
+            if other_1 in self.possible_characters:
+                self.possible_characters[other_1] = [0]
+            elif other_1 in self.possible_weapons:
+                self.possible_weapons[other_1] = [0]
+            elif other_1 in self.possible_rooms:
+                self.possible_rooms[other_1] = [0]
+
+            if other_2 in self.possible_characters:
+                self.possible_characters[other_2] = [0]
+            elif other_2 in self.possible_weapons:
+                self.possible_weapons[other_2] = [0]
+            elif other_2 in self.possible_rooms:
+                self.possible_rooms[other_2] = [0]
+
             
         self.check_solution()
 
     def check_player_card_count():
         # This should implement the logic to reduce the selection size
         # If the maximum number of player cards has been reached for a player, they cant have any more cards here so they can be eliminated from the other options
-        return 0
-
-    def infer_suggestion(self, suggestor, disprover, card):
-        # This is going to be considered if two other players make a suggestion and disprove it without involving the AI
-        self.check_solution()
         return 0
 
     def check_solution(self):
@@ -126,10 +145,6 @@ class AI_Player(Player):
             for card, candidates in self.possible_rooms.items():
                 if 0 in candidates:
                     self.possible_rooms[card].remove(0)
-
-        # If we are confident on the solution, make the final accusation
-        if self.accuse_character and self.accuse_weapon and self.accuse_room:
-            print("ACCUSATION LOGIC HERE")
 
     def move(self, board):
         # Roll for number of moves
@@ -225,102 +240,37 @@ class AI_Player(Player):
             disprove = board.disprove(self.player_number, character_selection, destination_selection, weapon_selection)
 
             if disprove[0]:
-                print("Your suggestion was incorrect!")
+                print("The suggestion was incorrect!")
                 print("Player {} revealed the card: {}".format(disprove[1], disprove[2]))
-                self.revealed.append(disprove[2])
+                suggested = [character_selection, destination_selection, weapon_selection]
+                suggested.remove(disprove[2])
+                self.remove_suggestion(self, disprove[1], disprove[2], suggested[0], suggested[1])
             else:
-                print("No one was able to disprove your suggestion!")
+                print("No one was able to disprove the suggestion!")
+                self.remove_suggestion(self, self.player_number, character_selection, destination_selection, weapon_selection)
 
             self.prior_position = self.position
         elif type(self.position) == str and self.position == self.prior_position:
-            print("You have reentered the {} and cannot make another suggestion in this room until you visit another room.".format(self.position))
+            print("The AI has reentered the {} and cannot make another suggestion in this room until it visits another room.".format(self.position))
 
         # Offer accusation
         if not self.accusation:
-            print("Would you like to make your final accusation?")
-            print("Option 1: Yes")
-            print("Option 2: No")
-            accusation_selection = ""
-            while type(accusation_selection) != int:
-                try:
-                    accusation_selection = input("Please enter an option number to select if you will make your final accusation: ")
-                    accusation_selection = int(accusation_selection)
-                    if accusation_selection < 1 or accusation_selection > 2:
-                        print("Invalid selection: Please enter a value between 1 and 2")
-                        accusation_selection = ""
-                    else:
-                        accusation_selection -= 1
-                except ValueError:
-                    print("Invalid selection: Please enter a value between 1 and 2")
+            # If we are confident on the solution, make the final accusation
+            if self.accuse_character and self.accuse_weapon and self.accuse_room:
 
-            if accusation_selection == 0:
-                character_selection = ""
-                weapon_selection = ""
-                destination_selection = ""
+                character_selection = self.accuse_character
+                weapon_selection = self.accuse_weapon
+                destination_selection = self.accuse_room
 
-                # Character Accusation
-                print("Accuse one of the following characters:")
-                characters = board.get_characters()
-                for i in range(len(characters)):
-                    print("Option {}: {}".format(i+1, characters[i]))
-                while type(character_selection) != int:
-                    try:
-                        character_selection = input("Please enter an option number to accuse a character: ")
-                        character_selection = int(character_selection)
-                        if character_selection < 1 or character_selection > len(characters):
-                            print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
-                            character_selection = ""
-                        else:
-                            character_selection -= 1
-                    except ValueError:
-                        print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
-                character_selection = characters[character_selection]
-                
-                # Weapon Accusation
-                print("Accuse one of the following weapons:")
-                weapons = board.get_weapons()
-                for i in range(len(weapons)):
-                    print("Option {}: {}".format(i+1, weapons[i]))
-                while type(weapon_selection) != int:
-                    try:
-                        weapon_selection = input("Please enter an option number to accuse a weapon: ")
-                        weapon_selection = int(weapon_selection)
-                        if weapon_selection < 1 or weapon_selection > len(weapons):
-                            print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
-                            weapon_selection = ""
-                        else:
-                            weapon_selection -= 1
-                    except ValueError:
-                        print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
-                weapon_selection = weapons[weapon_selection]
-
-                # Destination Accusation
-                print("Accuse one of the following rooms:")
-                destinations = board.get_destinations()
-                for i in range(len(destinations)):
-                    print("Option {}: {}".format(i+1, destinations[i]))
-                while type(destination_selection) != int:
-                    try:
-                        destination_selection = input("Please enter an option number to accuse a room: ")
-                        destination_selection = int(destination_selection)
-                        if destination_selection < 1 or destination_selection > len(destinations):
-                            print("Invalid selection: Please enter a value between 1 and {}".format(len(destinations)))
-                            destination_selection = ""
-                        else:
-                            destination_selection -= 1
-                    except ValueError:
-                        print("Invalid selection: Please enter a value between 1 and {}".format(len(destinations)))
-                destination_selection = destinations[destination_selection]
-
-                print("You accuse {} in the {} with the {}!".format(character_selection, destination_selection, weapon_selection))
+                print("Player {} (AI) accuses {} in the {} with the {}!".format(self.player_number, character_selection, destination_selection, weapon_selection))
 
                 self.accusation = True
 
                 # Check Accusation
                 if board.accuse(character_selection, weapon_selection, destination_selection):
-                    print("You have used your clues and solved the mystery! Congratulations! You win!")
+                    print("Player {} (AI) has used the clues and solved the mystery, winning the game!".format(self.player_number))
                 else:
-                    print("You have missed a critical piece of evidence and made an incorrect accusation! You lose!")
+                    print("Player {} (AI) has missed a critical piece of evidence and made an incorrect accusation! Player {} (AI) loses!".format(self.player_number, self.player_number))
             time.sleep(5)
 
     def get_info(self):
