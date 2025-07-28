@@ -180,7 +180,7 @@ class CluedoBoard:
             self.players.append(Player(i+1, characters.pop(), cards[i]))
 
         # Add AI player
-        self.players.append(AI_Player(player_count, characters.pop(), cards[player_count-1]))
+        self.players.append(AI_Player(player_count, characters.pop(), cards[player_count-1], player_count))
 
         # Add the solution cards back into the reference deck
         self.characters = temp_characters
@@ -236,38 +236,41 @@ class CluedoBoard:
 
             hand = self.players[cur].get_cards()
             if character_selection in hand or destination_selection in hand or weapon_selection in hand:
-                player_number = self.players[cur].get_player_number()
-                print("Player {} has a card that could disprove your suggestion! Please pass the device to Player {}.".format(player_number, player_number))
-                time.sleep(10)
-                os.system("cls" if os.name == "nt" else "clear")
-                print("Player {} has suggested that it was {} in the {} with the {}.".format(suggestor_number, character_selection, destination_selection, weapon_selection))
-                print("Please select a card to show to Player {} to disprove this suggestion:".format(suggestor_number))
-                
-                options = []
-                for card in hand:
-                    if card == character_selection or card == destination_selection or card == weapon_selection:
-                        options.append(card)
+                if self.players[cur].get_AI():
+                    return [True, self.players[cur].get_player_number(), self.players[cur].show_card(character_selection, weapon_selection, destination_selection)]
+                else:
+                    player_number = self.players[cur].get_player_number()
+                    print("Player {} has a card that could disprove your suggestion! Please pass the device to Player {}.".format(player_number, player_number))
+                    time.sleep(10)
+                    os.system("cls" if os.name == "nt" else "clear")
+                    print("Player {} has suggested that it was {} in the {} with the {}.".format(suggestor_number, character_selection, destination_selection, weapon_selection))
+                    print("Please select a card to show to Player {} to disprove this suggestion:".format(suggestor_number))
+                    
+                    options = []
+                    for card in hand:
+                        if card == character_selection or card == destination_selection or card == weapon_selection:
+                            options.append(card)
 
-                for i in range(len(options)):
-                    print("Option {}: {}".format(i+1, options[i]))
+                    for i in range(len(options)):
+                        print("Option {}: {}".format(i+1, options[i]))
 
-                card_selection = ""
-                while type(card_selection) != int:
-                    try:
-                        card_selection = input("Please enter an option number to reveal a card: ")
-                        card_selection = int(card_selection)
-                        if card_selection < 1 or card_selection > len(options):
+                    card_selection = ""
+                    while type(card_selection) != int:
+                        try:
+                            card_selection = input("Please enter an option number to reveal a card: ")
+                            card_selection = int(card_selection)
+                            if card_selection < 1 or card_selection > len(options):
+                                print("Invalid selection: Please enter a value between 1 and {}".format(len(options)))
+                                card_selection = ""
+                            else:
+                                card_selection -= 1
+                        except ValueError:
                             print("Invalid selection: Please enter a value between 1 and {}".format(len(options)))
-                            card_selection = ""
-                        else:
-                            card_selection -= 1
-                    except ValueError:
-                        print("Invalid selection: Please enter a value between 1 and {}".format(len(options)))
-            
-                os.system("cls" if os.name == "nt" else "clear")
-                print("You will show the {} card to disprove Player {}'s suggestion. Please pass the device to Player {}.".format(options[card_selection], suggestor_number, suggestor_number))
-                time.sleep(5)
-                os.system("cls" if os.name == "nt" else "clear")
-                return [True, self.players[cur].get_player_number(), options[card_selection]]
+                
+                    os.system("cls" if os.name == "nt" else "clear")
+                    print("You will show the {} card to disprove Player {}'s suggestion. Please pass the device to Player {}.".format(options[card_selection], suggestor_number, suggestor_number))
+                    time.sleep(5)
+                    os.system("cls" if os.name == "nt" else "clear")
+                    return [True, self.players[cur].get_player_number(), options[card_selection]]
         
         return [False]

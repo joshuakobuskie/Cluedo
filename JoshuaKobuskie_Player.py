@@ -35,6 +35,7 @@ class Player:
         self.moves = 0
         self.prior_position = self.position
         self.revealed = []
+        self.AI = False
 
     def get_position(self):
         return self.position
@@ -285,3 +286,6 @@ class Player:
         print("Position: {}".format(self.position))
         print("Cards: {}".format(self.cards))
         print("Revealed Cards from Other Players: {}".format(self.revealed))
+
+    def get_AI(self):
+        return self.AI

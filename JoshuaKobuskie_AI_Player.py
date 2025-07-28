@@ -9,6 +9,9 @@ class AI_Player(Player):
         # Create player
         super().__init__(player_number, character, cards)
 
+        self.AI = True
+        self.shown = []
+
         self.player_count = player_count
 
         self.accuse_character = None
@@ -194,6 +197,9 @@ class AI_Player(Player):
             # The best room with the shortest distance has been found and the move to get there now can be selected
             best_distance = float("inf")
             for i in range(len(possible_moves)):
+                print(possible_moves[i][1])
+                print(board)
+                print(best_room)
                 distance = self.distance_to_room(possible_moves[i][1], board, best_room)
                 if distance < best_distance:
                     best_distance = distance
@@ -295,6 +301,29 @@ class AI_Player(Player):
                 min_distance = min(min_distance, distance)
                 
         return min_distance
+    
+    def show_card(self, character, weapon, room):
+        # Reveal previously shown cards first
+        if character in self.shown:
+            return character
+        elif weapon in self.shown:
+            return weapon
+        elif room in self.shown:
+            return room
+        
+        # If there are no shown cards, revealed one at random
+        else:
+            candidates = []
+            if character in self.cards:
+                candidates.append(character)
+            if weapon in self.cards:
+                candidates.append(weapon)
+            if room in self.cards:
+                candidates.append(room)
+
+            show = random.choice(candidates)
+            self.shown.append(show)
+            return show
 
 # test = AI_Player(3, "Miss Scarlett", ['Mrs. Peacock', 'Candlestick Holder', 'Wrench', 'Kitchen', 'Colonel Mustard', 'Rope', 'Lead Pipe', 'Dining Room', 'Hall'], 3)
 # print(test.possible_characters)

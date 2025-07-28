@@ -33,7 +33,10 @@ def main():
         os.system("cls" if os.name == "nt" else "clear")
         board.next_player()
         current_player = board.get_current_player()
-        print("Your turn is over. Please pass the device to Player {}.".format(current_player.get_player_number()))
+        if current_player.get_AI():
+            print("Your turn is over. It is now Player {}'s (AI) turn.".format(current_player.get_player_number()))
+        else:
+            print("Your turn is over. Please pass the device to Player {}.".format(current_player.get_player_number()))
         time.sleep(5)
         os.system("cls" if os.name == "nt" else "clear")
 
