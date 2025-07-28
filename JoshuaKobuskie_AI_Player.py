@@ -98,17 +98,34 @@ class AI_Player(Player):
         return 0
 
     def check_solution(self):
+        # Check if the solution has been found
         for card, candidates in self.possible_characters.items():
             if candidates == [0]:
                 self.accuse_character = card
-        
+
+        # Save and update all other entries if solution found
+        if self.accuse_character:
+            for card, candidates in self.possible_characters.items():
+                if 0 in candidates:
+                    self.possible_characters[card].remove(0)
+
         for card, candidates in self.possible_weapons.items():
             if candidates == [0]:
                 self.accuse_weapon = card
+
+        if self.accuse_weapon:
+            for card, candidates in self.possible_weapons.items():
+                if 0 in candidates:
+                    self.possible_weapons[card].remove(0)
         
         for card, candidates in self.possible_rooms.items():
             if candidates == [0]:
                 self.accuse_room = card
+
+        if self.accuse_room:
+            for card, candidates in self.possible_rooms.items():
+                if 0 in candidates:
+                    self.possible_rooms[card].remove(0)
 
         # If we are confident on the solution, make the final accusation
         if self.accuse_character and self.accuse_weapon and self.accuse_room:
@@ -142,23 +159,23 @@ class AI_Player(Player):
         if self.position != self.prior_position:
             possible_moves.append(["Stay", self.position])
         
+        # Determine the best room to visit in order to pick the next movement
+        # Only search rooms where the solution may be and we are not currently
+        candidate_rooms = [room for room, candidates in self.possible_rooms.items() if 0 in candidates and self.prior_position != room]
+            
+        # Select closest room from candidates
+        best_room = None
+        best_distance = float("inf")
+        for room in candidate_rooms:
+            distance = self.distance_to_room(self.position, board, room)
+            if distance < best_distance:
+                best_distance = distance
+                best_room = room
+
         while self.moves > 0:
 
             # Determine open squares
             possible_moves.extend(board.check_moves(self))
-
-            # Determine the best room to visit in order to pick the next movement
-            # Only search rooms where the solution may be
-            candidate_rooms = [room for room, candidates in self.possible_rooms.items() if 0 in candidates]
-                
-            # Select closest room from candidates
-            best_room = None
-            best_distance = float("inf")
-            for room in candidate_rooms:
-                distance = self.distance_to_room(self.position, board, room)
-                if distance < best_distance:
-                    best_distance = distance
-                    best_room = room
 
             # The best room with the shortest distance has been found and the move to get there now can be selected
             best_distance = float("inf")
@@ -185,53 +202,17 @@ class AI_Player(Player):
             possible_moves = []
 
             time.sleep(1)
-        
-        # CHANGE AFTER HERE AS WELL
 
         # Make a suggestion after entering a room
         if type(self.position) == str and self.position != self.prior_position:
-            print("You have entered the {} and can now make a suggestion!".format(self.position))
-            character_selection = ""
-            weapon_selection = ""
+            print("Player {} (AI) has entered the {} and can now make a suggestion!".format(self.player_number, self.position))
+
+            # Select a possible solution to suggest
+            character_selection = random.choice([character for character, candidates in self.possible_characters if 0 in candidates])
+            weapon_selection = random.choice([weapon for weapon, candidates in self.possible_weapons if 0 in candidates])
             destination_selection = self.position
 
-            # Character suggestion
-            print("Suggest one of the following characters:")
-            characters = board.get_characters()
-            for i in range(len(characters)):
-                print("Option {}: {}".format(i+1, characters[i]))
-            while type(character_selection) != int:
-                try:
-                    character_selection = input("Please enter an option number to suggest a character: ")
-                    character_selection = int(character_selection)
-                    if character_selection < 1 or character_selection > len(characters):
-                        print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
-                        character_selection = ""
-                    else:
-                        character_selection -= 1
-                except ValueError:
-                    print("Invalid selection: Please enter a value between 1 and {}".format(len(characters)))
-            character_selection = characters[character_selection]
-            
-            # Weapon Suggestion
-            print("Suggest one of the following weapons:")
-            weapons = board.get_weapons()
-            for i in range(len(weapons)):
-                print("Option {}: {}".format(i+1, weapons[i]))
-            while type(weapon_selection) != int:
-                try:
-                    weapon_selection = input("Please enter an option number to suggest a weapon: ")
-                    weapon_selection = int(weapon_selection)
-                    if weapon_selection < 1 or weapon_selection > len(weapons):
-                        print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
-                        weapon_selection = ""
-                    else:
-                        weapon_selection -= 1
-                except ValueError:
-                    print("Invalid selection: Please enter a value between 1 and {}".format(len(weapons)))
-            weapon_selection = weapons[weapon_selection]
-
-            print("You suggest that it was {} in the {} with the {}!".format(character_selection, destination_selection, weapon_selection))
+            print("Player {} (AI) suggests that it was {} in the {} with the {}!".format(self.player_number, character_selection, destination_selection, weapon_selection))
             time.sleep(5)
             os.system("cls" if os.name == "nt" else "clear")
 
