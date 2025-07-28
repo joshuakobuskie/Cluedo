@@ -289,3 +289,6 @@ class Player:
 
     def get_AI(self):
         return self.AI
+
+# STILL NEEDED
+# Double check situation where moving up from the bottom toward the hall results in getting stuck

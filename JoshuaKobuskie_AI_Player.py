@@ -189,6 +189,7 @@ class AI_Player(Player):
                 best_distance = distance
                 best_room = room
 
+        last_position = None
         while self.moves > 0:
 
             # Determine open squares
@@ -197,15 +198,13 @@ class AI_Player(Player):
             # The best room with the shortest distance has been found and the move to get there now can be selected
             best_distance = float("inf")
             for i in range(len(possible_moves)):
-                print(possible_moves[i][1])
-                print(board)
-                print(best_room)
                 distance = self.distance_to_room(possible_moves[i][1], board, best_room)
-                if distance < best_distance:
+                if distance < best_distance and possible_moves[i][1] != last_position:
                     best_distance = distance
                     selection = i
             
-            # Take step and save new position
+            # Take step and save new position, preventing backtracking
+            last_position = self.position
             self.position = possible_moves[selection][1]
             self.moves -= 1
 
@@ -249,7 +248,7 @@ class AI_Player(Player):
                 print("Player {} revealed the card: {}".format(disprove[1], disprove[2]))
                 suggested = [character_selection, destination_selection, weapon_selection]
                 suggested.remove(disprove[2])
-                self.remove_suggestion(self, disprove[1], disprove[2], suggested[0], suggested[1])
+                self.remove_suggestion(disprove[1], disprove[2], suggested[0], suggested[1])
             else:
                 print("No one was able to disprove the suggestion!")
                 self.remove_suggestion(self, self.player_number, character_selection, destination_selection, weapon_selection)
@@ -279,8 +278,10 @@ class AI_Player(Player):
             time.sleep(3)
 
     def get_info(self):
-        super().get_info()
-        print("Player {} is an AI".format(self.player_number))
+        print("Player {} (AI)".format(self.player_number))
+        print("Character: {}".format(self.character))
+        print("Color/Symbol: {}".format(self.color))
+        print("Position: {}".format(self.position))
 
     def distance_to_room(self, position, board, room):
         min_distance = float("inf")
