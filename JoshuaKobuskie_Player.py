@@ -276,7 +276,7 @@ class Player:
                     print("You have used your clues and solved the mystery! Congratulations! You win!")
                 else:
                     print("You have missed a critical piece of evidence and made an incorrect accusation! You lose!")
-            time.sleep(5)
+            time.sleep(3)
         
 
     def get_info(self):

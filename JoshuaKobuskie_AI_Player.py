@@ -228,8 +228,8 @@ class AI_Player(Player):
             print("Player {} (AI) has entered the {} and can now make a suggestion!".format(self.player_number, self.position))
 
             # Select a possible solution to suggest
-            character_selection = random.choice([character for character, candidates in self.possible_characters if 0 in candidates])
-            weapon_selection = random.choice([weapon for weapon, candidates in self.possible_weapons if 0 in candidates])
+            character_selection = random.choice([character for character, candidates in self.possible_characters.items() if 0 in candidates])
+            weapon_selection = random.choice([weapon for weapon, candidates in self.possible_weapons.items() if 0 in candidates])
             destination_selection = self.position
 
             print("Player {} (AI) suggests that it was {} in the {} with the {}!".format(self.player_number, character_selection, destination_selection, weapon_selection))
@@ -276,13 +276,13 @@ class AI_Player(Player):
                     print("Player {} (AI) has used the clues and solved the mystery, winning the game!".format(self.player_number))
                 else:
                     print("Player {} (AI) has missed a critical piece of evidence and made an incorrect accusation! Player {} (AI) loses!".format(self.player_number, self.player_number))
-            time.sleep(5)
+            time.sleep(3)
 
     def get_info(self):
         super().get_info()
         print("Player {} is an AI".format(self.player_number))
 
-    def distance_to_room(position, board, room):
+    def distance_to_room(self, position, board, room):
         min_distance = float("inf")
         doors = board.get_doors()
         target_doors = doors[room]
