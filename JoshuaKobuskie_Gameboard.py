@@ -152,9 +152,9 @@ class CluedoBoard:
 
         return moves
     
-    def setup(self, player_count):
+    def setup(self, player_count, ai_count):
         # Selects characters for players
-        characters = random.sample(self.characters, player_count)
+        characters = random.sample(self.characters, player_count+ai_count)
         random.shuffle(characters)
 
         # Storing the card order to use in other functions
@@ -172,15 +172,16 @@ class CluedoBoard:
         random.shuffle(cards)
 
         # Splits cards for player hands
-        cards = np.array_split(cards, player_count)
+        cards = np.array_split(cards, player_count+ai_count)
         cards = [card_set.tolist() for card_set in cards]
         
         # Assigns players and deals
-        for i in range(player_count-1):
-            self.players.append(Player(i+1, characters.pop(), cards[i]))
+        for i in range(player_count):
+            self.players.append(Player(i+1, characters.pop(), cards.pop()))
 
-        # Add AI player
-        self.players.append(AI_Player(player_count, characters.pop(), cards[player_count-1], player_count))
+        # Add AI players
+        for i in range(ai_count):
+            self.players.append(AI_Player(player_count+1+i, characters.pop(), cards.pop(), player_count+ai_count))
 
         # Add the solution cards back into the reference deck
         self.characters = temp_characters
@@ -211,6 +212,9 @@ class CluedoBoard:
     
     def get_doors(self):
         return self.room_positions
+    
+    def get_passages(self):
+        return self.passages
     
     def accuse(self, character, weapon, destination):
 

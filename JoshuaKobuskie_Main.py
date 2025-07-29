@@ -11,18 +11,32 @@ def main():
 
     print("Welcome to Cluedo!")
     player_count = ""
+    ai_count = ""
+
+    # Select number of real players
     while type(player_count) != int:
         try:
-            player_count = input("Please enter the number of players between 1 and 5: ")
+            player_count = input("Please enter the number of real players between 1 and 6: ")
             player_count = int(player_count)
-            if player_count < 1 or player_count > 5:
-                print("Invalid selection: Please enter a value between 1 and 5")
+            if player_count < 1 or player_count > 6:
+                print("Invalid selection: Please enter a value between 1 and 6")
                 player_count = ""
         except ValueError:
-            print("Invalid selection: Please enter a value between 1 and 5")
+            print("Invalid selection: Please enter a value between 1 and 6")
     
+    # Select number of AI players
+    while type(ai_count) != int:
+        try:
+            ai_count = input("Please enter the number of AI players between 0 and {}: ".format(6-player_count))
+            ai_count = int(ai_count)
+            if ai_count < 0 or ai_count > (6-player_count):
+                print("Invalid selection: Please enter a value between 0 and {}".format(6-player_count))
+                ai_count = ""
+        except ValueError:
+            print("Invalid selection: Please enter a value between 0 and {}".format(6-player_count))
+
     # Last player will be an AI
-    board.setup(player_count+1)
+    board.setup(player_count, ai_count)
 
     print("The game is about to begin! Please pass the device to Player 1.")
     time.sleep(5)

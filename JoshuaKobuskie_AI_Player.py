@@ -2,6 +2,7 @@ from JoshuaKobuskie_Player import Player
 import os
 import random
 import time
+import sys
 
 class AI_Player(Player):
     def __init__(self, player_number, character, cards, player_count):
@@ -113,11 +114,6 @@ class AI_Player(Player):
             
         self.check_solution()
 
-    def check_player_card_count():
-        # This should implement the logic to reduce the selection size
-        # If the maximum number of player cards has been reached for a player, they cant have any more cards here so they can be eliminated from the other options
-        return 0
-
     def check_solution(self):
         # Check if the solution has been found
         for card, candidates in self.possible_characters.items():
@@ -166,6 +162,7 @@ class AI_Player(Player):
             print("Steps remaining: {}".format(self.moves))
             print("Current position: {}".format(self.position))
             print("The AI has already made an incorrect accusation! It has has lost the game!")
+            time.sleep(3)
         else:
             print("The AI has rolled a {}".format(self.moves))
             print("Steps remaining: {}".format(self.moves))
@@ -185,12 +182,17 @@ class AI_Player(Player):
         best_distance = float("inf")
         for room in candidate_rooms:
             distance = self.distance_to_room(self.position, board, room)
-            if distance < best_distance:
-                best_distance = distance
-                best_room = room
+            if distance <= best_distance:
+                # Equally effective rooms, prevents looping behavior
+                if distance == best_distance:
+                    best_distance = distance
+                    best_room = random.choice([best_room, room])
+                else:
+                    best_distance = distance
+                    best_room = room
 
         last_position = None
-        while self.moves > 0:
+        while self.moves > 0 and not self.accusation:
 
             # Determine open squares
             possible_moves.extend(board.check_moves(self))
@@ -199,9 +201,14 @@ class AI_Player(Player):
             best_distance = float("inf")
             for i in range(len(possible_moves)):
                 distance = self.distance_to_room(possible_moves[i][1], board, best_room)
-                if distance < best_distance and possible_moves[i][1] != last_position:
-                    best_distance = distance
-                    selection = i
+                if distance <= best_distance and possible_moves[i][1] != last_position:
+                    # Equally effective moves, prevents looping behavior
+                    if distance == best_distance:
+                        best_distance = distance
+                        selection = random.choice([selection, i])
+                    else:
+                        best_distance = distance
+                        selection = i
             
             # Take step and save new position, preventing backtracking
             last_position = self.position
@@ -215,6 +222,15 @@ class AI_Player(Player):
             os.system("cls" if os.name == "nt" else "clear")
             board.print_board()
             self.get_info()
+            print("#"*64)
+            print(best_room)
+            print(best_distance)
+            print(possible_moves)
+            print(possible_moves[selection][1])
+            print(self.possible_characters)
+            print(self.possible_weapons)
+            print(self.possible_rooms)
+            print("#"*64)
 
             print("Steps remaining: {}".format(self.moves))
             print("Current position: {}".format(self.position))
@@ -223,7 +239,7 @@ class AI_Player(Player):
             time.sleep(1)
 
         # Make a suggestion after entering a room
-        if type(self.position) == str and self.position != self.prior_position:
+        if type(self.position) == str and self.position != self.prior_position and not self.accusation:
             print("Player {} (AI) has entered the {} and can now make a suggestion!".format(self.player_number, self.position))
 
             # Select a possible solution to suggest
@@ -251,7 +267,7 @@ class AI_Player(Player):
                 self.remove_suggestion(disprove[1], disprove[2], suggested[0], suggested[1])
             else:
                 print("No one was able to disprove the suggestion!")
-                self.remove_suggestion(self, self.player_number, character_selection, destination_selection, weapon_selection)
+                self.remove_suggestion(self.player_number, character_selection, destination_selection, weapon_selection)
 
             self.prior_position = self.position
         elif type(self.position) == str and self.position == self.prior_position:
@@ -273,6 +289,7 @@ class AI_Player(Player):
                 # Check Accusation
                 if board.accuse(character_selection, weapon_selection, destination_selection):
                     print("Player {} (AI) has used the clues and solved the mystery, winning the game!".format(self.player_number))
+                    sys.exit(0)
                 else:
                     print("Player {} (AI) has missed a critical piece of evidence and made an incorrect accusation! Player {} (AI) loses!".format(self.player_number, self.player_number))
             time.sleep(3)
@@ -287,8 +304,13 @@ class AI_Player(Player):
         min_distance = float("inf")
         doors = board.get_doors()
         target_doors = doors[room]
+
+        passages = board.get_passages()
         
         if type(position) == str:
+            # Special case for passages
+            if position in passages and room == passages[position]:
+                return 0
             # If in a room, use its doors as starting points
             current_doors = doors[position]
             for current_door in current_doors:

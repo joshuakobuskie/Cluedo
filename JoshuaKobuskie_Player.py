@@ -1,6 +1,7 @@
 import random
 import os
 import time
+import sys
 
 class Player:
     def __init__(self, player_number, character, cards):
@@ -76,6 +77,7 @@ class Player:
             print("Steps remaining: {}".format(self.moves))
             print("Current position: {}".format(self.position))
             print("You have already made an incorrect accusation! You have lost the game!")
+            time.sleep(3)
         else:
             print("You have rolled a {}".format(self.moves))
             print("Steps remaining: {}".format(self.moves))
@@ -86,7 +88,7 @@ class Player:
         if self.position != self.prior_position:
             possible_moves.append(["Stay", self.position])
         
-        while self.moves > 0:
+        while self.moves > 0 and not self.accusation:
 
             # Determine open squares
             possible_moves.extend(board.check_moves(self))
@@ -125,7 +127,7 @@ class Player:
             possible_moves = []
         
         # Make a suggestion after entering a room
-        if type(self.position) == str and self.position != self.prior_position:
+        if type(self.position) == str and self.position != self.prior_position and not self.accusation:
             print("You have entered the {} and can now make a suggestion!".format(self.position))
             character_selection = ""
             weapon_selection = ""
@@ -179,10 +181,13 @@ class Player:
             # Disprove guess
             disprove = board.disprove(self.player_number, character_selection, destination_selection, weapon_selection)
 
+            print("You suggested that it was {} in the {} with the {}!".format(character_selection, destination_selection, weapon_selection))
+
             if disprove[0]:
                 print("Your suggestion was incorrect!")
                 print("Player {} revealed the card: {}".format(disprove[1], disprove[2]))
-                self.revealed.append(disprove[2])
+                if disprove[2] not in self.revealed:
+                    self.revealed.append(disprove[2])
             else:
                 print("No one was able to disprove your suggestion!")
 
@@ -192,6 +197,8 @@ class Player:
 
         # Offer accusation
         if not self.accusation:
+            print("Cards: {}".format(self.cards))
+            print("Revealed Cards from Other Players: {}".format(self.revealed))
             print("Would you like to make your final accusation?")
             print("Option 1: Yes")
             print("Option 2: No")
@@ -274,6 +281,7 @@ class Player:
                 # Check Accusation
                 if board.accuse(character_selection, weapon_selection, destination_selection):
                     print("You have used your clues and solved the mystery! Congratulations! You win!")
+                    sys.exit(0)
                 else:
                     print("You have missed a critical piece of evidence and made an incorrect accusation! You lose!")
             time.sleep(3)
@@ -292,3 +300,4 @@ class Player:
 
 # STILL NEEDED
 # Double check situation where moving up from the bottom toward the hall results in getting stuck
+# Fix movement mechanics that result in weird paths
