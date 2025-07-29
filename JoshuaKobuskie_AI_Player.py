@@ -146,11 +146,7 @@ class AI_Player(Player):
 
     def move(self, board):
         # Roll for number of moves
-
-        # IMPORTANT: Using testing value as 100
-        # Replace with the following
-        # self.moves = random.randint(1, 6)
-        self.moves = 100
+        self.moves = random.randint(1, 6)
 
         os.system("cls" if os.name == "nt" else "clear")
         board.print_board()
@@ -199,16 +195,22 @@ class AI_Player(Player):
 
             # The best room with the shortest distance has been found and the move to get there now can be selected
             best_distance = float("inf")
-            for i in range(len(possible_moves)):
-                distance = self.distance_to_room(possible_moves[i][1], board, best_room)
-                if distance <= best_distance and possible_moves[i][1] != last_position:
-                    # Equally effective moves, prevents looping behavior
-                    if distance == best_distance:
-                        best_distance = distance
-                        selection = random.choice([selection, i])
-                    else:
-                        best_distance = distance
-                        selection = i
+
+            # Prevent corner traps
+            if len(possible_moves) == 1:
+                best_distance = self.distance_to_room(possible_moves[0][1], board, best_room)
+                selection = 0
+            else:
+                for i in range(len(possible_moves)):
+                    distance = self.distance_to_room(possible_moves[i][1], board, best_room)
+                    if distance <= best_distance and possible_moves[i][1] != last_position:
+                        # Equally effective moves, prevents looping behavior
+                        if distance == best_distance:
+                            best_distance = distance
+                            selection = random.choice([selection, i])
+                        else:
+                            best_distance = distance
+                            selection = i
             
             # Take step and save new position, preventing backtracking
             last_position = self.position
@@ -261,7 +263,6 @@ class AI_Player(Player):
 
             if disprove[0]:
                 print("The suggestion was incorrect!")
-                print("Player {} revealed the card: {}".format(disprove[1], disprove[2]))
                 suggested = [character_selection, destination_selection, weapon_selection]
                 suggested.remove(disprove[2])
                 self.remove_suggestion(disprove[1], disprove[2], suggested[0], suggested[1])

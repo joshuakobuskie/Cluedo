@@ -61,11 +61,7 @@ class Player:
 
     def move(self, board):
         # Roll for number of moves
-
-        # IMPORTANT: Using testing value as 100
-        # Replace with the following
-        # self.moves = random.randint(1, 6)
-        self.moves = 100
+        self.moves = random.randint(1, 6)
 
         os.system("cls" if os.name == "nt" else "clear")
         board.print_board()

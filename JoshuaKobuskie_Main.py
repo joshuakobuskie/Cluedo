@@ -39,7 +39,7 @@ def main():
     board.setup(player_count, ai_count)
 
     print("The game is about to begin! Please pass the device to Player 1.")
-    time.sleep(5)
+    time.sleep(3)
 
     while board.get_play():
         current_player = board.get_current_player()
