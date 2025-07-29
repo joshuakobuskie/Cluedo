@@ -163,6 +163,8 @@ class AI_Player(Player):
             print("The AI has rolled a {}".format(self.moves))
             print("Steps remaining: {}".format(self.moves))
             print("Current position: {}".format(self.position))
+            
+        time.sleep(1)
 
         # Handle getting pulled to a new room
         possible_moves = []
@@ -252,8 +254,11 @@ class AI_Player(Player):
             # Disprove guess
             disprove = board.disprove(self.player_number, character_selection, destination_selection, weapon_selection)
 
+            print("Player {} (AI) suggested that it was {} in the {} with the {}!".format(self.player_number, character_selection, destination_selection, weapon_selection))
+
             if disprove[0]:
                 print("The suggestion was incorrect!")
+                print("Player {} revealed a card".format(disprove[1]))
                 suggested = [character_selection, destination_selection, weapon_selection]
                 suggested.remove(disprove[2])
                 self.remove_suggestion(disprove[1], disprove[2], suggested[0], suggested[1])
@@ -290,7 +295,6 @@ class AI_Player(Player):
         print("Player {} (AI)".format(self.player_number))
         print("Character: {}".format(self.character))
         print("Color/Symbol: {}".format(self.color))
-        print("Position: {}".format(self.position))
 
     def distance_to_room(self, position, board, room):
         min_distance = float("inf")

@@ -79,6 +79,8 @@ class Player:
             print("Steps remaining: {}".format(self.moves))
             print("Current position: {}".format(self.position))
 
+        time.sleep(1)
+
         # Handle getting pulled to a new room
         possible_moves = []
         if self.position != self.prior_position:
@@ -287,7 +289,6 @@ class Player:
         print("Hello Player {}!".format(self.player_number))
         print("Character: {}".format(self.character))
         print("Color/Symbol: {}".format(self.color))
-        print("Position: {}".format(self.position))
         print("Cards: {}".format(self.cards))
         print("Revealed Cards from Other Players: {}".format(self.revealed))
 
