@@ -13,9 +13,11 @@ Necessary libraries:
     * os
     * time
     * numpy
+    * sys
 3. Running the game: Once the repository and dependencies have been successfully installed, navigate into the "JoshuaKobuskie_Project2_SourceCode" folder and run the following command in a terminal "python3 JoshuaKobuskie_Main.py"
 4. Playing the game: The game is played from the command line. Please follow the on-screen instructions by entering a number in the specified range to:
-    * Indicate the number of players
+    * Indicate the number of real players
+    * Indicate the number of AI players
     * Pass the device to the appropriate player
     * Select movements from the list of possible moves provided
     * Make suggestions after entering a room
