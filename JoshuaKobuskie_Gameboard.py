@@ -230,7 +230,6 @@ class CluedoBoard:
             return False
         
     def disprove(self, suggestor_number, character_selection, destination_selection, weapon_selection):
-        # THIS NEEDS TO BE REVISED TO SUPPORT THE AI REVEALING ITS HAND
 
         cur = self.current_player
 
