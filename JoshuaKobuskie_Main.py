@@ -1,5 +1,4 @@
 from JoshuaKobuskie_Gameboard import CluedoBoard
-from JoshuaKobuskie_Player import Player
 import os
 import time
 
