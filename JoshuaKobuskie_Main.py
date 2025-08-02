@@ -34,7 +34,6 @@ def main():
         except ValueError:
             print("Invalid selection: Please enter a value between 0 and {}".format(6-player_count))
 
-    # Last player will be an AI
     board.setup(player_count, ai_count)
 
     print("The game is about to begin! Please pass the device to Player 1.")
