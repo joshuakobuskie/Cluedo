@@ -83,7 +83,7 @@ class Player:
 
         # Handle getting pulled to a new room
         possible_moves = []
-        if self.position != self.prior_position:
+        if self.position != self.prior_position and type(self.position) == str:
             possible_moves.append(["Stay", self.position])
         
         while self.moves > 0 and not self.accusation:

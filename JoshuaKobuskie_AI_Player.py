@@ -168,7 +168,7 @@ class AI_Player(Player):
 
         # Handle getting pulled to a new room
         possible_moves = []
-        if self.position != self.prior_position:
+        if self.position != self.prior_position and type(self.position) == str:
             possible_moves.append(["Stay", self.position])
         
         # Determine the best room to visit in order to pick the next movement
@@ -190,6 +190,7 @@ class AI_Player(Player):
                     best_room = room
 
         last_position = None
+        
         while self.moves > 0 and not self.accusation:
 
             # Determine open squares
